@@ -1,3 +1,4 @@
+'use client';
 import { notFound } from 'next/navigation';
 import { Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { products } from '@/lib/data';
@@ -11,6 +12,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useStore } from '@/lib/store';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+
+// We are fetching all products and then finding the one with the matching slug.
+// This is not optimal for a large number of products.
+// In a real-world application, you would fetch only the required product by its slug.
+// However, since this page is dynamically rendered, we need to provide `generateStaticParams`
+// to pre-build all product pages at build time for better performance.
+// The `dynamic` export is not required here because `generateStaticParams` is used.
 
 export function generateStaticParams() {
   return products.map((product) => ({
@@ -20,10 +33,23 @@ export function generateStaticParams() {
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const product = products.find((p) => p.slug === params.slug);
-
+  const { addToCart, toggleWishlist, isItemInWishlist } = useStore();
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(product?.variants.size[0] || '');
+  const [selectedColor, setSelectedColor] = useState(product?.variants.color[0] || '');
+  
   if (!product) {
     notFound();
   }
+  
+  const isInWishlist = isItemInWishlist(product.id);
+
+  const handleAddToCart = () => {
+    addToCart(product, selectedSize, selectedColor, quantity);
+  };
+
+  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
@@ -37,33 +63,47 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           
           <Separator className="my-6" />
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <p className="text-sm font-semibold mb-2">Color: <span className="font-normal text-muted-foreground">{product.variants.color[0]}</span></p>
-              {/* Color swatches could go here */}
+              <p className="text-sm font-semibold mb-2">Color: <span className="font-normal text-muted-foreground">{selectedColor}</span></p>
+              <RadioGroup value={selectedColor} onValueChange={setSelectedColor} className="flex gap-2">
+                 {product.variants.color.map(color => (
+                  <RadioGroupItem key={color} value={color} id={`color-${color}`} className="sr-only"/>
+                ))}
+              </RadioGroup>
             </div>
             <div>
               <p className="text-sm font-semibold mb-2">Size</p>
-              <div className="flex gap-2">
+              <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex gap-2">
                 {product.variants.size.map(size => (
-                  <Button key={size} variant="outline" className="w-12 h-12">{size}</Button>
+                  <div key={size}>
+                    <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
+                    <Label htmlFor={`size-${size}`}>
+                      <div className={cn(
+                        "w-12 h-12 flex items-center justify-center rounded-md border cursor-pointer",
+                        selectedSize === size ? "border-primary ring-2 ring-primary ring-offset-2" : "border-input"
+                      )}>
+                        {size}
+                      </div>
+                    </Label>
+                  </div>
                 ))}
-              </div>
+              </RadioGroup>
             </div>
           </div>
 
           <div className="mt-8 flex items-center gap-4">
             <div className="flex items-center border rounded-md">
-              <Button variant="ghost" size="icon" className="h-12"><Minus className="w-4 h-4" /></Button>
-              <span className="w-8 text-center">1</span>
-              <Button variant="ghost" size="icon" className="h-12"><Plus className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="icon" className="h-12" onClick={decrementQuantity}><Minus className="w-4 h-4" /></Button>
+              <span className="w-8 text-center">{quantity}</span>
+              <Button variant="ghost" size="icon" className="h-12" onClick={incrementQuantity}><Plus className="w-4 h-4" /></Button>
             </div>
-            <Button size="lg" className="flex-1 h-12">
+            <Button size="lg" className="flex-1 h-12" onClick={handleAddToCart}>
               <ShoppingBag className="mr-2 h-5 w-5" />
               Add to Cart
             </Button>
-            <Button variant="outline" size="icon" className="h-12 w-12">
-              <Heart className="h-5 w-5" />
+            <Button variant="outline" size="icon" className="h-12 w-12" onClick={() => toggleWishlist(product)}>
+              <Heart className={cn("h-5 w-5", isInWishlist && "fill-destructive text-destructive")} />
             </Button>
           </div>
           

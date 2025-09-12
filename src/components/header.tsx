@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { useStore } from '@/lib/store';
+import { Badge } from './ui/badge';
 
 const mainNav = [
   { href: '/products', label: 'Abaya' },
@@ -20,6 +22,9 @@ const mainNav = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { cart, wishlist } = useStore();
+
+  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,18 +98,24 @@ export default function Header() {
                     <Search className="h-5 w-5" />
                 </Button>
                 <Button asChild variant="ghost" size="icon" aria-label="User Account">
-                <Link href="/login">
+                <Link href="/account/profile">
                     <User className="h-5 w-5" />
                 </Link>
                 </Button>
-                <Button asChild variant="ghost" size="icon" aria-label="Wishlist">
+                <Button asChild variant="ghost" size="icon" aria-label="Wishlist" className="relative">
                 <Link href="/wishlist">
                     <Heart className="h-5 w-5" />
+                    {wishlist.length > 0 && (
+                      <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs">{wishlist.length}</Badge>
+                    )}
                 </Link>
                 </Button>
-                <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart">
+                <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="relative">
                 <Link href="/cart">
                     <ShoppingBag className="h-5 w-5" />
+                    {totalCartItems > 0 && (
+                       <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs">{totalCartItems}</Badge>
+                    )}
                 </Link>
                 </Button>
             </nav>

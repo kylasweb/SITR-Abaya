@@ -1,11 +1,11 @@
+'use client';
 import Link from 'next/link';
-import { products } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { Button } from '@/components/ui/button';
+import { useStore } from '@/lib/store';
 
 export default function WishlistPage() {
-  // In a real app, this data would come from user state or an API
-  const wishlistItems = products.slice(2, 5);
+  const { wishlist: wishlistItems } = useStore();
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">

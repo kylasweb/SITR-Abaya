@@ -1,20 +1,19 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { products } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useStore } from '@/lib/store';
 
 export default function CartPage() {
-  // In a real app, this data would come from user state or an API
-  const cartItems = [
-    { product: products[0], quantity: 1 },
-    { product: products[3], quantity: 1 },
-  ];
+  const { cart: cartItems, updateQuantity, removeFromCart } = useStore();
+  
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const shipping = 10;
+  const shipping = subtotal > 0 ? 10 : 0;
   const total = subtotal + shipping;
 
   return (
@@ -37,19 +36,19 @@ export default function CartPage() {
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
                           <Link href={`/products/${item.product.slug}`} className="font-semibold hover:underline">{item.product.name}</Link>
-                          <p className="text-sm text-muted-foreground">Color: {item.product.variants.color[0]}</p>
-                          <p className="text-sm text-muted-foreground">Size: M</p>
+                          <p className="text-sm text-muted-foreground">Color: {item.color}</p>
+                          <p className="text-sm text-muted-foreground">Size: {item.size}</p>
                         </div>
                         <div className="flex items-center justify-between mt-2">
-                           <p className="font-semibold">${item.product.price.toFixed(2)}</p>
+                           <p className="font-semibold">${(item.product.price * item.quantity).toFixed(2)}</p>
                            <div className="flex items-center border rounded-md">
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Minus className="w-3 h-3" /></Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}><Minus className="w-3 h-3" /></Button>
                               <span className="w-6 text-center text-sm">{item.quantity}</span>
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Plus className="w-3 h-3" /></Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}><Plus className="w-3 h-3" /></Button>
                             </div>
                         </div>
                       </div>
-                       <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                       <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.product.id)}>
                           <Trash2 className="w-4 h-4" />
                         </Button>
                     </li>

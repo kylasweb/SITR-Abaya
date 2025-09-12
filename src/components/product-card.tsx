@@ -8,6 +8,7 @@ import { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useStore } from '@/lib/store';
 
 interface ProductCardProps {
   product: Product;
@@ -15,24 +16,36 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, className }: ProductCardProps) {
+  const { toggleWishlist, isItemInWishlist } = useStore();
+  const isInWishlist = isItemInWishlist(product.id);
+
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  }
+
   return (
     <Card className={cn('overflow-hidden border-0 shadow-sm transition-shadow hover:shadow-lg bg-transparent group', className)}>
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
-          <Image
-            src={product.images[0].url}
-            alt={product.images[0].alt}
-            data-ai-hint={product.images[0].aiHint}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          <Link href={`/products/${product.slug}`} className="focus:outline-none">
+            <Image
+              src={product.images[0].url}
+              alt={product.images[0].alt}
+              data-ai-hint={product.images[0].aiHint}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </Link>
           <Button
             size="icon"
             variant="secondary"
             className="absolute top-3 right-3 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
             aria-label="Add to wishlist"
+            onClick={handleWishlistToggle}
           >
-            <Heart className="h-4 w-4" />
+            <Heart className={cn("h-4 w-4", isInWishlist && "fill-destructive text-destructive")} />
           </Button>
         </div>
       </CardHeader>
