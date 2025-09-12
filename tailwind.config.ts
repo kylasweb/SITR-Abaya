@@ -18,7 +18,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['"Times New Roman"', 'Times', 'serif'],
-        headline: ['"Playfair Display"', 'serif'],
+        headline: ['"Cormorant Garamond"', 'serif'],
         code: ['monospace'],
       },
       colors: {
