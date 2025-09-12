@@ -65,22 +65,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
           <div className="space-y-6">
             <div>
-              <p className="text-sm font-semibold mb-2">Color: <span className="font-normal text-muted-foreground">{selectedColor}</span></p>
-              <RadioGroup value={selectedColor} onValueChange={setSelectedColor} className="flex gap-2">
-                 {product.variants.color.map(color => (
-                  <RadioGroupItem key={color} value={color} id={`color-${color}`} className="sr-only"/>
-                ))}
-              </RadioGroup>
-            </div>
-            <div>
               <p className="text-sm font-semibold mb-2">Size</p>
-              <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex gap-2">
+              <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex flex-wrap gap-2">
                 {product.variants.size.map(size => (
                   <div key={size}>
                     <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
                     <Label htmlFor={`size-${size}`}>
                       <div className={cn(
-                        "w-12 h-12 flex items-center justify-center rounded-md border cursor-pointer",
+                        "w-14 h-12 flex items-center justify-center rounded-md border cursor-pointer",
                         selectedSize === size ? "border-primary ring-2 ring-primary ring-offset-2" : "border-input"
                       )}>
                         {size}

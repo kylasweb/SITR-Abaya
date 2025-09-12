@@ -8,8 +8,8 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 
 const categories = ["Daywear", "Evening Wear", "Formal Wear", "Workwear"];
-const sizes = ["S", "M", "L", "XL", "XXL"];
-const materials = ["Silk", "Linen", "Velvet", "Crepe", "Cotton"];
+const sizes = ["50", "52", "54", "56", "58", "60"];
+const materials = ["Silk", "Linen", "Velvet", "Crepe", "Cotton", "Nida", "Georgette"];
 
 export default function ProductFilters() {
   const [priceRange, setPriceRange] = useState([0, 500]);
