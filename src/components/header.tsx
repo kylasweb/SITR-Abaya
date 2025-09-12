@@ -32,7 +32,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className={cn(
-        "bg-secondary/50 text-center text-sm py-1.5 px-4 transition-all duration-300",
+        "bg-primary text-primary-foreground text-center text-sm py-1.5 px-4 transition-all duration-300",
         isScrolled ? "h-0 py-0 overflow-hidden" : "h-auto"
       )}>
         Ramadan Kareem.
