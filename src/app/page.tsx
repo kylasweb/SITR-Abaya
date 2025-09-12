@@ -56,7 +56,7 @@ export default function Home() {
         </div>
       </section>
       
-      <section className="bg-secondary/30">
+      <section className="bg-primary text-primary-foreground">
         <IslamicQuote />
       </section>
 
