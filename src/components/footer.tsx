@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Logo } from './icons';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -49,7 +49,7 @@ export default function Footer() {
 
         <div className="mt-12 border-t pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Logo className="h-7 w-auto" />
+            <Image src="https://placehold.co/120x40/000000/F6E9C7?text=SITR" alt="SITR Logo" width={100} height={35} />
             <p>&copy; {new Date().getFullYear()} SITR. All Rights Reserved.</p>
           </div>
           <div className="mt-4 sm:mt-0">
