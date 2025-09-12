@@ -140,27 +140,28 @@ export const products: Product[] = [
 // Fetches all products from Firestore.
 // Caching and error handling would be added in a production scenario.
 export async function getProducts(): Promise<Product[]> {
-  try {
-    const productsCollection = collection(db, "products");
-    const productSnapshot = await getDocs(productsCollection);
-    const productList = productSnapshot.docs.map(doc => {
-      const data = doc.data();
-      // Re-hydrate image URLs from placeholder data
-      const hydratedImages = data.images.map((img: { id: string; }) => getImage(img.id));
-      return { ...data, images: hydratedImages } as Product;
-    });
+    return Promise.resolve(products);
+//   try {
+//     const productsCollection = collection(db, "products");
+//     const productSnapshot = await getDocs(productsCollection);
+//     const productList = productSnapshot.docs.map(doc => {
+//       const data = doc.data();
+//       // Re-hydrate image URLs from placeholder data
+//       const hydratedImages = data.images.map((img: { id: string; }) => getImage(img.id));
+//       return { ...data, images: hydratedImages } as Product;
+//     });
 
-    if (productList.length === 0) {
-      // If Firestore is empty, return the static data as a fallback.
-      // In a real app, you might have a seeding script.
-      console.warn("Firestore 'products' collection is empty. Falling back to static data.");
-      return products;
-    }
+//     if (productList.length === 0) {
+//       // If Firestore is empty, return the static data as a fallback.
+//       // In a real app, you might have a seeding script.
+//       console.warn("Firestore 'products' collection is empty. Falling back to static data.");
+//       return products;
+//     }
 
-    return productList;
-  } catch (error) {
-    console.error("Error fetching products from Firestore:", error);
-    // Fallback to static data on error
-    return products;
-  }
+//     return productList;
+//   } catch (error) {
+//     console.error("Error fetching products from Firestore:", error);
+//     // Fallback to static data on error
+//     return products;
+//   }
 }
