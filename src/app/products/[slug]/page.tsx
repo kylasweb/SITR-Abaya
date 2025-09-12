@@ -20,13 +20,6 @@ import { Label } from '@/components/ui/label';
 import type { Product } from '@/lib/types';
 
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
-
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,7 +46,30 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     // You can return a loading skeleton here
     return (
       <div className="container mx-auto px-4 py-8 md:py-16">
-        <p>Loading...</p>
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
+          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-muted animate-pulse"></div>
+          <div className="md:py-8">
+            <div className="h-10 w-3/4 bg-muted animate-pulse rounded-md"></div>
+            <div className="h-8 w-1/4 bg-muted animate-pulse rounded-md mt-4"></div>
+            <div className="space-y-2 mt-6">
+              <div className="h-4 w-full bg-muted animate-pulse rounded-md"></div>
+              <div className="h-4 w-full bg-muted animate-pulse rounded-md"></div>
+              <div className="h-4 w-5/6 bg-muted animate-pulse rounded-md"></div>
+            </div>
+            <Separator className="my-6" />
+             <div className="h-6 w-16 bg-muted animate-pulse rounded-md mb-2"></div>
+             <div className="flex flex-wrap gap-2">
+                {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-14 h-12 bg-muted animate-pulse rounded-md"></div>
+                ))}
+             </div>
+             <div className="mt-8 flex items-center gap-4">
+                <div className="w-28 h-12 bg-muted animate-pulse rounded-md"></div>
+                <div className="flex-1 h-12 bg-muted animate-pulse rounded-md"></div>
+                <div className="w-12 h-12 bg-muted animate-pulse rounded-full"></div>
+             </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -87,13 +103,13 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <div className="space-y-6">
             <div>
               <p className="text-sm font-semibold mb-2">Size</p>
-              <RadioGroup value={selectedSize} onValuechange={setSelectedSize} className="flex flex-wrap gap-2">
+              <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex flex-wrap gap-2">
                 {product.variants.size.map(size => (
                   <div key={size}>
                     <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
                     <Label htmlFor={`size-${size}`}>
                       <div className={cn(
-                        "w-14 h-12 flex items-center justify-center rounded-md border cursor-pointer",
+                        "w-14 h-12 flex items-center justify-center rounded-md border cursor-pointer transition-colors hover:bg-accent",
                         selectedSize === size ? "border-primary ring-2 ring-primary ring-offset-2" : "border-input"
                       )}>
                         {size}

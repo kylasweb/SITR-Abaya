@@ -26,7 +26,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   }
 
   return (
-    <Card className={cn('overflow-hidden border-0 shadow-sm transition-shadow hover:shadow-lg bg-transparent group', className)}>
+    <Card className={cn('overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg group', className)}>
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] w-full overflow-hidden">
           <Link href={`/products/${product.slug}`} className="focus:outline-none">
@@ -36,12 +36,13 @@ export default function ProductCard({ product, className }: ProductCardProps) {
               data-ai-hint={product.images[0].aiHint}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
           </Link>
           <Button
             size="icon"
             variant="secondary"
-            className="absolute top-3 right-3 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-3 right-3 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/80"
             aria-label="Add to wishlist"
             onClick={handleWishlistToggle}
           >
