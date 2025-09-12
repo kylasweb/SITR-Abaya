@@ -6,8 +6,8 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 
 export const metadata: Metadata = {
-  title: 'Abaya AI',
-  description: 'Luxury abayas with AI-powered shopping assistance.',
+  title: 'SITR',
+  description: 'Luxury abayas.',
 };
 
 export default function RootLayout({

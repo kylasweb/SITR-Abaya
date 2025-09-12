@@ -55,8 +55,8 @@ export default function Header() {
                   className="mb-8 flex items-center"
                   onClick={() => setIsOpen(false)}
                 >
-                  <Image src="/logo.svg" alt="Abaya AI Logo" width={100} height={32} />
-                  <span className="sr-only">Abaya AI</span>
+                  <Image src="/logo.svg" alt="SITR Logo" width={100} height={32} />
+                  <span className="sr-only">SITR</span>
                 </Link>
                 <div className="flex flex-col space-y-4">
                 {mainNav.map((item) => (
@@ -82,8 +82,8 @@ export default function Header() {
 
         <div className="flex-2 flex justify-center">
             <Link href="/" className="flex items-center">
-                <Image src="/logo.svg" alt="Abaya AI Logo" width={120} height={40} />
-                <span className="sr-only">Abaya AI</span>
+                <Image src="/logo.svg" alt="SITR Logo" width={120} height={40} />
+                <span className="sr-only">SITR</span>
             </Link>
         </div>
 

@@ -49,8 +49,8 @@ export default function Footer() {
 
         <div className="mt-12 border-t pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="Abaya AI" width={80} height={26} />
-            <p>&copy; {new Date().getFullYear()} Abaya AI. All Rights Reserved.</p>
+            <Image src="/logo.svg" alt="SITR" width={80} height={26} />
+            <p>&copy; {new Date().getFullYear()} SITR. All Rights Reserved.</p>
           </div>
           <div className="mt-4 sm:mt-0">
             {/* Social media icons can be added here */}
