@@ -10,10 +10,11 @@ import { Diamond } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 const mainNav = [
-  { href: '/products', label: 'Shop' },
-  { href: '/#', label: 'Size Guide' },
-  { href: '/#', label: 'Ethos' },
-  { href: '/#', label: 'Contact' },
+  { href: '/products', label: 'Abaya' },
+  { href: '#', label: 'Hijabs' },
+  { href: '#', label: 'Collections' },
+  { href: '#', label: 'About Us' },
+  { href: '#', label: 'Returns' },
 ];
 
 export default function Header() {
@@ -74,7 +75,9 @@ export default function Header() {
         </div>
 
         <div className="flex-1 justify-start items-center hidden md:flex">
-             {/* Future country selector can go here */}
+            <Button variant="ghost" size="icon" aria-label="Search">
+                <Search className="h-5 w-5" />
+            </Button>
         </div>
 
         <div className="flex-2 flex justify-center">
@@ -86,8 +89,8 @@ export default function Header() {
 
         <div className="flex-1 flex justify-end items-center">
              <nav className="flex items-center">
-                <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
-                <Search className="h-5 w-5" />
+                <Button variant="ghost" size="icon" aria-label="Search" className="md:hidden">
+                    <Search className="h-5 w-5" />
                 </Button>
                 <Button asChild variant="ghost" size="icon" aria-label="User Account">
                 <Link href="/login">
