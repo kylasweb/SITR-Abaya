@@ -26,12 +26,24 @@ const mainNav = [
 ];
 
 const currencies = [
-    { code: 'USD', name: 'United States Dollar' },
+    { code: 'AED', name: 'United Arab Emirates Dirham' },
+    { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'CAD', name: 'Canadian Dollar' },
+    { code: 'CHF', name: 'Swiss Franc' },
+    { code: 'CNY', name: 'Chinese Yuan' },
     { code: 'EUR', name: 'Euro' },
     { code: 'GBP', name: 'British Pound Sterling' },
+    { code: 'HKD', name: 'Hong Kong Dollar' },
+    { code: 'INR', name: 'Indian Rupee' },
     { code: 'JPY', name: 'Japanese Yen' },
-    { code: 'AED', name: 'United Arab Emirates Dirham' },
+    { code: 'KWD', name: 'Kuwaiti Dinar' },
+    { code: 'MYR', name: 'Malaysian Ringgit' },
+    { code: 'NZD', name: 'New Zealand Dollar' },
+    { code: 'OMR', name: 'Omani Rial' },
+    { code: 'QAR', name: 'Qatari Riyal' },
     { code: 'SAR', name: 'Saudi Riyal' },
+    { code: 'SGD', name: 'Singapore Dollar' },
+    { code: 'USD', name: 'United States Dollar' },
 ]
 
 export default function Header() {
