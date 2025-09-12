@@ -22,3 +22,5 @@ export type Product = {
   category: string;
   tags: string[];
 };
+
+export type NewProduct = Omit<Product, 'id' | 'slug'>;

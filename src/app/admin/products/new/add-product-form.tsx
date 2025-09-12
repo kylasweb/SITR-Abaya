@@ -22,23 +22,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { Loader2, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { addProductAction } from "./actions";
+import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useRef } from "react";
 
 const productSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters."),
   description: z.string().min(10, "Description must be at least 10 characters."),
   price: z.coerce.number().positive("Price must be a positive number."),
   category: z.string().min(1, "Category is required."),
-  tags: z.array(z.object({ value: z.string() })).min(1, "At least one tag is required."),
-  sizes: z.array(z.object({ value: z.string() })).min(1, "At least one size is required."),
-  materials: z.array(z.object({ value: z.string() })).min(1, "At least one material is required."),
+  tags: z.array(z.object({ value: z.string().min(1, 'Tag cannot be empty') })).min(1, "At least one tag is required."),
+  sizes: z.array(z.object({ value: z.string().min(1, 'Size cannot be empty') })).min(1, "At least one size is required."),
+  materials: z.array(z.object({ value: z.string().min(1, 'Material cannot be empty') })).min(1, "At least one material is required."),
+  imageIds: z.string().min(1, "At least one image ID is required."),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
 
+const initialState = {
+  message: '',
+  success: false,
+  timestamp: Date.now(),
+};
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+       {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Creating Product...
+        </>
+      ) : (
+        "Create Product"
+      )}
+    </Button>
+  );
+}
+
+
 export function AddProductForm() {
   const { toast } = useToast();
+  const [state, formAction] = useFormState(addProductAction, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -46,9 +76,10 @@ export function AddProductForm() {
       description: "",
       price: 0,
       category: "",
-      tags: [{ value: "" }],
-      sizes: [{ value: "" }],
-      materials: [{ value: "" }],
+      tags: [{ value: "elegant" }],
+      sizes: [{ value: "52" }, { value: "54" }, { value: "56" }],
+      materials: [{ value: "Silk" }],
+      imageIds: "abaya-1-front,abaya-1-side,abaya-1-back,abaya-1-detail",
     },
   });
 
@@ -56,24 +87,34 @@ export function AddProductForm() {
   const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
   const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({ control: form.control, name: "materials" });
 
-  async function onSubmit(data: ProductFormValues) {
-    // In a real app, this would be a server action to save the data to a database.
-    console.log({
-        ...data,
-        tags: data.tags.map(t => t.value),
-        sizes: data.sizes.map(s => s.value),
-        materials: data.materials.map(m => m.value)
-    });
-    toast({
-      title: "Product Created",
-      description: `The product "${data.name}" has been successfully created.`,
-    });
-    form.reset();
-  }
+  useEffect(() => {
+    if (state.timestamp && state.message) {
+      if (state.success) {
+        toast({
+          title: "Product Created",
+          description: state.message,
+        });
+        form.reset();
+        formRef.current?.reset();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: state.message,
+        });
+      }
+    }
+  }, [state, toast, form]);
+
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        ref={formRef}
+        action={formAction}
+        onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -139,6 +180,24 @@ export function AddProductForm() {
             )}
             />
         </div>
+        
+        <FormField
+          control={form.control}
+          name="imageIds"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Image Placeholder IDs</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., abaya-9-front,abaya-9-side" {...field} />
+              </FormControl>
+              <FormDescription>
+                Comma-separated list of image placeholder IDs from placeholder-images.json.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
 
         <div className="space-y-4">
             <div>
@@ -166,6 +225,7 @@ export function AddProductForm() {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Size
             </Button>
+            <FormMessage>{form.formState.errors.sizes?.message}</FormMessage>
         </div>
 
          <div className="space-y-4">
@@ -194,6 +254,7 @@ export function AddProductForm() {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Material
             </Button>
+             <FormMessage>{form.formState.errors.materials?.message}</FormMessage>
         </div>
 
          <div className="space-y-4">
@@ -222,9 +283,10 @@ export function AddProductForm() {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Tag
             </Button>
+             <FormMessage>{form.formState.errors.tags?.message}</FormMessage>
         </div>
         
-        <Button type="submit">Create Product</Button>
+        <SubmitButton />
       </form>
     </Form>
   );
