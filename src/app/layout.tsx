@@ -6,6 +6,8 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { StoreProvider } from '@/lib/store';
 import { AuthProvider } from '@/lib/auth';
+import { headers } from 'next/headers';
+
 
 export const metadata: Metadata = {
   title: 'SITR - Elegance Redefined',
@@ -14,13 +16,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  params
 }: Readonly<{
   children: React.ReactNode;
-  params: { slug?: string[] }
 }>) {
-
-  const isAdminRoute = params?.slug?.[0] === 'admin';
+  const headersList = headers();
+  const pathname = headersList.get('x-next-pathname') || '';
+  const isAdminRoute = pathname.startsWith('/admin');
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -29,12 +30,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
       </head>
-      <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'bg-muted/50': isAdminRoute })}>
+      <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'bg-muted/50': isAdminRoute && pathname !== '/admin/login' })}>
         <AuthProvider>
           <StoreProvider>
-            {isAdminRoute ? null : <Header />}
+            {!isAdminRoute && <Header />}
             <main className="flex-grow">{children}</main>
-            {isAdminRoute ? null : <Footer />}
+            {!isAdminRoute && <Footer />}
             <Toaster />
           </StoreProvider>
         </AuthProvider>
