@@ -143,6 +143,12 @@ export async function getProducts(): Promise<Product[]> {
   try {
     const productsCollection = collection(db, "products");
     const productSnapshot = await getDocs(productsCollection);
+    
+    if (productSnapshot.empty) {
+      console.warn("Firestore 'products' collection is empty. Serving local data as a fallback. Please seed the database.");
+      return localProducts;
+    }
+
     const productList = productSnapshot.docs.map(doc => {
       const data = doc.data();
       // Firestore stores image data as an array of objects, but we need to re-hydrate the full URL
@@ -150,16 +156,11 @@ export async function getProducts(): Promise<Product[]> {
       return { id: doc.id, ...data, images: hydratedImages } as Product;
     });
 
-    if (productList.length === 0) {
-      // If Firestore is empty, it's likely not seeded yet.
-      console.warn("Firestore 'products' collection is empty. You may need to seed the database.");
-      return [];
-    }
-
     return productList;
   } catch (error) {
     console.error("Error fetching products from Firestore:", error);
-    // On error (e.g. API not enabled), return an empty array to avoid crashing the app.
-    return [];
+    // On error (e.g. API not enabled, permissions issue), fall back to local data.
+    console.warn("Serving local data due to Firestore fetch error.");
+    return localProducts;
   }
 }

@@ -32,9 +32,18 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       setLoading(true);
       const products = await getProducts();
       const foundProduct = products.find((p) => p.slug === params.slug) || null;
-      setProduct(foundProduct);
-      if (foundProduct?.variants.size[0]) {
-        setSelectedSize(foundProduct.variants.size[0]);
+      
+      if (!foundProduct) {
+        // If product not found, it could be a slug issue or data issue.
+        // We will not call notFound() immediately to prevent build errors
+        // if the data isn't available at build time. The component will
+        // render the "not found" state below.
+        setProduct(null);
+      } else {
+        setProduct(foundProduct);
+        if (foundProduct.variants.size[0]) {
+          setSelectedSize(foundProduct.variants.size[0]);
+        }
       }
       setLoading(false);
     }
@@ -82,7 +91,15 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   }
 
   if (!product) {
-    notFound();
+    // This will render if the product is not found after loading.
+    // In a production app, you might want to call notFound() here,
+    // but this prevents build errors if data is not yet available.
+    return (
+        <div className="container mx-auto text-center py-20">
+            <h1 className="text-2xl font-bold">Product Not Found</h1>
+            <p className="text-muted-foreground mt-2">Sorry, we couldn't find the product you're looking for.</p>
+        </div>
+    )
   }
   
   const isInWishlist = isItemInWishlist(product.id);
