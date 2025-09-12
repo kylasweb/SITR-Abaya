@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Menu, Search, ShoppingBag, User } from 'lucide-react';
+import { Heart, Menu, Search, ShoppingBag, User, Globe } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,12 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { useStore } from '@/lib/store';
 import { Badge } from './ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const mainNav = [
   { href: '/products', label: 'Abaya' },
@@ -19,10 +25,20 @@ const mainNav = [
   { href: '#', label: 'Returns' },
 ];
 
+const currencies = [
+    { code: 'USD', name: 'United States Dollar' },
+    { code: 'EUR', name: 'Euro' },
+    { code: 'GBP', name: 'British Pound Sterling' },
+    { code: 'JPY', name: 'Japanese Yen' },
+    { code: 'AED', name: 'United Arab Emirates Dirham' },
+    { code: 'SAR', name: 'Saudi Riyal' },
+]
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { cart, wishlist } = useStore();
+  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0].code);
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -83,6 +99,20 @@ export default function Header() {
             <Button variant="ghost" size="icon" aria-label="Search">
                 <Search className="h-5 w-5" />
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Select Currency">
+                  <Globe className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {currencies.map(currency => (
+                   <DropdownMenuItem key={currency.code} onSelect={() => setSelectedCurrency(currency.code)}>
+                    {currency.code} - {currency.name}
+                   </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
         </div>
 
         <div className="flex-2 flex justify-center">
@@ -94,6 +124,22 @@ export default function Header() {
 
         <div className="flex-1 flex justify-end items-center">
              <nav className="flex items-center">
+                <div className="md:hidden">
+                    <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" aria-label="Select Currency">
+                        <Globe className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        {currencies.map(currency => (
+                        <DropdownMenuItem key={currency.code} onSelect={() => setSelectedCurrency(currency.code)}>
+                            {currency.code} - {currency.name}
+                        </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
                 <Button variant="ghost" size="icon" aria-label="Search" className="md:hidden">
                     <Search className="h-5 w-5" />
                 </Button>
