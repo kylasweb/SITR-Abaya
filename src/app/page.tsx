@@ -6,7 +6,7 @@ import { products } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import IslamicQuote from '@/components/islamic-quote';
-import { Gem, HandHeart, Leaf, Palette, ShoppingBag, Truck } from 'lucide-react';
+import { Gem, HandHeart, Leaf, Palette, Ruler, Truck } from 'lucide-react';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 4);
@@ -98,10 +98,10 @@ export default function Home() {
               </p>
             </div>
              <div className="flex flex-col items-center">
-              <ShoppingBag className="h-10 w-10 text-primary mb-4"/>
-              <h3 className="font-headline text-xl font-semibold">Curated Collections</h3>
+              <Ruler className="h-10 w-10 text-primary mb-4"/>
+              <h3 className="font-headline text-xl font-semibold">Inclusive Sizing</h3>
               <p className="text-muted-foreground mt-2">
-                Discover exclusive collections that are carefully curated to bring you the best in modest fashion.
+                We celebrate all body types, offering special collections for petite women and a range of inclusive sizes.
               </p>
             </div>
             <div className="flex flex-col items-center">
