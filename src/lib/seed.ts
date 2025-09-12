@@ -9,13 +9,12 @@ import type { Product } from './types';
 // We need to transform the product data slightly before sending it to Firestore.
 // Specifically, we'll store a lightweight version of the image data, not the full URL.
 const transformForFirestore = (product: Product) => {
-  const firestoreProduct = { ...product };
+  const { images, ...rest } = product;
 
-  // Convert full image objects to just their IDs
-  // @ts-ignore
-  firestoreProduct.images = product.images.map(image => ({ id: image.id }));
+  // Convert full image objects to just an object with an 'id' property
+  const firestoreImages = images.map(image => ({ id: image.id }));
   
-  return firestoreProduct;
+  return { ...rest, images: firestoreImages };
 };
 
 
