@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { Heart, Menu, Search, ShoppingBag, User } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Diamond } from '@/components/icons';
+import { cn } from '@/lib/utils';
 
 const mainNav = [
   { href: '/products', label: 'Shop' },
@@ -17,10 +18,22 @@ const mainNav = [
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="bg-secondary/50 text-center text-sm py-1.5 px-4">
+      <div className={cn(
+        "bg-secondary/50 text-center text-sm py-1.5 px-4 transition-all duration-300",
+        isScrolled ? "h-0 py-0 overflow-hidden" : "h-auto"
+      )}>
         Ramadan Kareem.
       </div>
       <div className="container flex h-20 items-center">
