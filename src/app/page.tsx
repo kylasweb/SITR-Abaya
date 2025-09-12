@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full h-[60vh] md:h-[80vh] text-primary-foreground">
+      <section className="relative w-full h-[80vh] md:h-screen text-primary-foreground">
         <div className="absolute inset-0 bg-primary/30 z-10" />
         {heroImage && (
            <Image
