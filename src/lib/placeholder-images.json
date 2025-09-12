@@ -1,3 +1,58 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Elegant woman wearing a flowing abaya in a desert landscape at sunset.",
+      "imageUrl": "https://picsum.photos/seed/hero/1920/1080",
+      "imageHint": "abaya fashion"
+    },
+    {
+      "id": "abaya-1",
+      "description": "Front view of a black silk abaya with intricate embroidery.",
+      "imageUrl": "https://picsum.photos/seed/abaya1/800/1200",
+      "imageHint": "black abaya"
+    },
+    {
+      "id": "abaya-2",
+      "description": "A flowing beige abaya made of lightweight linen.",
+      "imageUrl": "https://picsum.photos/seed/abaya2/800/1200",
+      "imageHint": "beige abaya"
+    },
+    {
+      "id": "abaya-3",
+      "description": "An emerald green velvet abaya for special occasions.",
+      "imageUrl": "https://picsum.photos/seed/abaya3/800/1200",
+      "imageHint": "green abaya"
+    },
+    {
+      "id": "abaya-4",
+      "description": "A modern navy blue abaya with a minimalist design.",
+      "imageUrl": "https://picsum.photos/seed/abaya4/800/1200",
+      "imageHint": "blue abaya"
+    },
+    {
+      "id": "abaya-5",
+      "description": "A white cotton abaya perfect for everyday wear.",
+      "imageUrl": "https://picsum.photos/seed/abaya5/800/1200",
+      "imageHint": "white abaya"
+    },
+    {
+      "id": "abaya-6",
+      "description": "A luxurious charcoal grey abaya with pearl details.",
+      "imageUrl": "https://picsum.photos/seed/abaya6/800/1200",
+      "imageHint": "grey abaya"
+    },
+    {
+      "id": "abaya-7",
+      "description": "A deep burgundy abaya with a matching sheila.",
+      "imageUrl": "https://picsum.photos/seed/abaya7/800/1200",
+      "imageHint": "burgundy abaya"
+    },
+    {
+      "id": "abaya-8",
+      "description": "A dusty rose pink abaya with delicate lace trim.",
+      "imageUrl": "https://picsum.photos/seed/abaya8/800/1200",
+      "imageHint": "pink abaya"
+    }
+  ]
 }
