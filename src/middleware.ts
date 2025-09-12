@@ -7,9 +7,7 @@ export function middleware(request: NextRequest) {
   // This is a bit of a workaround to pass the path to the root layout
   // so it can decide whether to render the main header/footer.
   const response = NextResponse.next()
-  if (response.headers) {
-    response.headers.set('x-next-pathname', pathname)
-  }
+  response.headers.set('x-next-pathname', pathname)
   return response
 }
 
