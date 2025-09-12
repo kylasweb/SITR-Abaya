@@ -9,12 +9,11 @@ const getImage = (id: string) => {
     // Fallback for safety, though this shouldn't happen if JSON is correct
     return { id, url: 'https://picsum.photos/seed/error/800/1200', alt: 'Placeholder', aiHint: 'placeholder' };
   }
-  return { id, url: img.imageUrl, alt: img.description, aiHint: img.imageHint };
+  return { id: id, url: img.imageUrl, alt: img.description, aiHint: img.imageHint };
 };
 
-// The products array is now kept as a fallback or for seeding,
-// but the main function will be getProducts() which fetches from Firestore.
-export const products: Product[] = [
+// This local data is now primarily for seeding the database.
+export const localProducts: Product[] = [
   {
     id: 'prod_001',
     slug: 'midnight-silk-abaya',
@@ -137,6 +136,7 @@ export const products: Product[] = [
   },
 ];
 
+
 // Fetches all products from Firestore.
 // Caching and error handling would be added in a production scenario.
 export async function getProducts(): Promise<Product[]> {
@@ -145,22 +145,21 @@ export async function getProducts(): Promise<Product[]> {
     const productSnapshot = await getDocs(productsCollection);
     const productList = productSnapshot.docs.map(doc => {
       const data = doc.data();
-      // Re-hydrate image URLs from placeholder data
+      // Firestore stores image data as an array of objects, but we need to re-hydrate the full URL
       const hydratedImages = data.images.map((img: { id: string; }) => getImage(img.id));
-      return { ...data, images: hydratedImages } as Product;
+      return { id: doc.id, ...data, images: hydratedImages } as Product;
     });
 
     if (productList.length === 0) {
-      // If Firestore is empty, return the static data as a fallback.
-      // In a real app, you might have a seeding script.
-      console.warn("Firestore 'products' collection is empty. Falling back to static data.");
-      return products;
+      // If Firestore is empty, it's likely not seeded yet.
+      console.warn("Firestore 'products' collection is empty. You may need to seed the database.");
+      return [];
     }
 
     return productList;
   } catch (error) {
     console.error("Error fetching products from Firestore:", error);
-    // Fallback to static data on error
-    return products;
+    // On error (e.g. API not enabled), return an empty array to avoid crashing the app.
+    return [];
   }
 }
