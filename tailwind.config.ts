@@ -18,7 +18,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['"Times New Roman"', 'Times', 'serif'],
-        headline: ['"Tan Pearl"', 'Lora', 'serif'],
+        headline: ['"Playfair Display"', 'serif'],
         code: ['monospace'],
       },
       colors: {
