@@ -72,7 +72,7 @@ export default function AdminLayout({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="#">
+                <Link href="/admin/products">
                   <Package />
                   <span>Products</span>
                 </Link>
