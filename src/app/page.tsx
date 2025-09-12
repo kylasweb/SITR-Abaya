@@ -70,7 +70,7 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
-            <Card className="bg-secondary/30 p-8 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card className="bg-secondary/30 p-6 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
               <Gem className="h-10 w-10 text-primary mb-4" strokeWidth={1.5}/>
               <CardTitle className="font-headline text-xl font-semibold mb-2">Exquisite Quality</CardTitle>
               <CardContent className="p-0">
@@ -79,7 +79,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-8 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card className="bg-secondary/30 p-6 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
               <Palette className="h-10 w-10 text-primary mb-4" strokeWidth={1.5}/>
               <CardTitle className="font-headline text-xl font-semibold mb-2">Timeless Designs</CardTitle>
               <CardContent className="p-0">
@@ -88,7 +88,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-8 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card className="bg-secondary/30 p-6 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
               <Leaf className="h-10 w-10 text-primary mb-4" strokeWidth={1.5}/>
               <CardTitle className="font-headline text-xl font-semibold mb-2">Ethically Made</CardTitle>
               <CardContent className="p-0">
@@ -97,7 +97,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-8 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card className="bg-secondary/30 p-6 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
               <HandHeart className="h-10 w-10 text-primary mb-4" strokeWidth={1.5}/>
               <CardTitle className="font-headline text-xl font-semibold mb-2">Customer-Centric</CardTitle>
               <CardContent className="p-0">
@@ -106,7 +106,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-8 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card className="bg-secondary/30 p-6 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
               <Ruler className="h-10 w-10 text-primary mb-4" strokeWidth={1.5}/>
               <CardTitle className="font-headline text-xl font-semibold mb-2">Inclusive Sizing</CardTitle>
               <CardContent className="p-0">
@@ -115,7 +115,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-8 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card className="bg-secondary/30 p-6 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
               <Truck className="h-10 w-10 text-primary mb-4" strokeWidth={1.5}/>
               <CardTitle className="font-headline text-xl font-semibold mb-2">Reliable Service</CardTitle>
               <CardContent className="p-0">
