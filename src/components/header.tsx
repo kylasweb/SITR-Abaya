@@ -1,12 +1,12 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Heart, Menu, Search, ShoppingBag, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Diamond } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 const mainNav = [
@@ -51,12 +51,12 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
                 <Link
-                href="/"
-                className="mb-8 flex items-center space-x-2"
-                onClick={() => setIsOpen(false)}
+                  href="/"
+                  className="mb-8 flex items-center"
+                  onClick={() => setIsOpen(false)}
                 >
-                <Diamond className="h-6 w-6" />
-                <span className="font-bold font-headline text-lg">Abaya AI</span>
+                  <Image src="/logo.svg" alt="Abaya AI Logo" width={100} height={32} />
+                  <span className="sr-only">Abaya AI</span>
                 </Link>
                 <div className="flex flex-col space-y-4">
                 {mainNav.map((item) => (
@@ -81,9 +81,9 @@ export default function Header() {
         </div>
 
         <div className="flex-2 flex justify-center">
-            <Link href="/" className="flex items-center space-x-2">
-                <Diamond className="h-8 w-8" />
-                <span className="text-3xl font-bold sm:inline-block font-headline">Abaya AI</span>
+            <Link href="/" className="flex items-center">
+                <Image src="/logo.svg" alt="Abaya AI Logo" width={120} height={40} />
+                <span className="sr-only">Abaya AI</span>
             </Link>
         </div>
 

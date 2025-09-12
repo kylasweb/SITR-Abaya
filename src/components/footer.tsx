@@ -1,7 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Diamond } from './icons';
 
 export default function Footer() {
   return (
@@ -49,7 +49,7 @@ export default function Footer() {
 
         <div className="mt-12 border-t pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Diamond className="h-5 w-5 text-foreground" />
+            <Image src="/logo.svg" alt="Abaya AI" width={80} height={26} />
             <p>&copy; {new Date().getFullYear()} Abaya AI. All Rights Reserved.</p>
           </div>
           <div className="mt-4 sm:mt-0">
