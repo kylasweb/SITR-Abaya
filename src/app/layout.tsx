@@ -7,7 +7,7 @@ import Footer from '@/components/footer';
 import { StoreProvider } from '@/lib/store';
 
 export const metadata: Metadata = {
-  title: 'SITR',
+  title: 'SITR - Elegance Redefined',
   description: 'Luxury abayas.',
 };
 

@@ -6,7 +6,7 @@ import { products } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import IslamicQuote from '@/components/islamic-quote';
-import { Diamond, ShieldCheck, Truck } from 'lucide-react';
+import { Gem, HandHeart, Leaf, Palette, ShoppingBag, Truck } from 'lucide-react';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 4);
@@ -56,7 +56,7 @@ export default function Home() {
         </div>
       </section>
       
-      <section className="bg-primary text-primary-foreground">
+      <section className="bg-primary">
         <IslamicQuote />
       </section>
 
@@ -68,19 +68,40 @@ export default function Home() {
               We are dedicated to providing you with an unparalleled experience in luxury and modest fashion.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 text-center">
             <div className="flex flex-col items-center">
-              <Diamond className="h-10 w-10 text-primary mb-4"/>
+              <Gem className="h-10 w-10 text-primary mb-4"/>
               <h3 className="font-headline text-xl font-semibold">Exquisite Quality</h3>
               <p className="text-muted-foreground mt-2">
                 Our abayas are crafted from the finest materials, ensuring a luxurious feel and a lasting impression.
               </p>
             </div>
             <div className="flex flex-col items-center">
-              <ShieldCheck className="h-10 w-10 text-primary mb-4"/>
-              <h3 className="font-headline text-xl font-semibold">Authentic Designs</h3>
+              <Palette className="h-10 w-10 text-primary mb-4"/>
+              <h3 className="font-headline text-xl font-semibold">Timeless Designs</h3>
               <p className="text-muted-foreground mt-2">
                 Each piece is thoughtfully designed, blending traditional modesty with contemporary elegance.
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Leaf className="h-10 w-10 text-primary mb-4"/>
+              <h3 className="font-headline text-xl font-semibold">Ethically Made</h3>
+              <p className="text-muted-foreground mt-2">
+                We are committed to ethical practices, ensuring our garments are made with integrity and care.
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <HandHeart className="h-10 w-10 text-primary mb-4"/>
+              <h3 className="font-headline text-xl font-semibold">Customer-Centric</h3>
+              <p className="text-muted-foreground mt-2">
+                Your satisfaction is our priority. We offer a shopping experience that is as seamless as it is personal.
+              </p>
+            </div>
+             <div className="flex flex-col items-center">
+              <ShoppingBag className="h-10 w-10 text-primary mb-4"/>
+              <h3 className="font-headline text-xl font-semibold">Curated Collections</h3>
+              <p className="text-muted-foreground mt-2">
+                Discover exclusive collections that are carefully curated to bring you the best in modest fashion.
               </p>
             </div>
             <div className="flex flex-col items-center">
