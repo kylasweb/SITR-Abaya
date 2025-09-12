@@ -61,7 +61,7 @@ export default function Header() {
                 <div className="flex flex-col space-y-4">
                 {mainNav.map((item) => (
                     <Link
-                    key={item.href}
+                    key={`${item.href}-${item.label}`}
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className="text-lg transition-colors hover:text-foreground/80 text-foreground/80"
@@ -115,7 +115,7 @@ export default function Header() {
           <nav className="flex items-center space-x-12 text-base py-3">
             {mainNav.map((item) => (
               <Link
-                key={item.href}
+                key={`${item.href}-${item.label}`}
                 href={item.href}
                 className="transition-colors hover:text-foreground/80 text-foreground"
               >
