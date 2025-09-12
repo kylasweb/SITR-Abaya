@@ -9,7 +9,6 @@ import { Button } from "./ui/button";
 
 const categories = ["Daywear", "Evening Wear", "Formal Wear", "Workwear"];
 const sizes = ["S", "M", "L", "XL", "XXL"];
-const colors = ["Black", "Beige", "Green", "Navy", "White", "Grey"];
 const materials = ["Silk", "Linen", "Velvet", "Crepe", "Cotton"];
 
 export default function ProductFilters() {
@@ -40,19 +39,6 @@ export default function ProductFilters() {
                 <div key={size} className="flex items-center space-x-2">
                   <Checkbox id={`size-${size}`} />
                   <Label htmlFor={`size-${size}`} className="font-normal">{size}</Label>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="color">
-          <AccordionTrigger className="font-body text-base">Color</AccordionTrigger>
-          <AccordionContent>
-            <div className="grid gap-2">
-              {colors.map(color => (
-                <div key={color} className="flex items-center space-x-2">
-                  <Checkbox id={`color-${color}`} />
-                  <Label htmlFor={`color-${color}`} className="font-normal">{color}</Label>
                 </div>
               ))}
             </div>
