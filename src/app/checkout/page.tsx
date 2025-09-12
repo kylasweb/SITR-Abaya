@@ -21,12 +21,19 @@ import {
 import { useState } from 'react';
 
 export default function CheckoutPage() {
-    const { cart: cartItems, clearCart } = useStore();
+    const { cart: cartItems, clearCart, selectedCurrency } = useStore();
     const router = useRouter();
     const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: selectedCurrency.code,
+        }).format(price * selectedCurrency.rate);
+    };
+
     const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-    const shipping = subtotal > 0 ? 10 : 0;
+    const shipping = subtotal > 0 ? 10 : 0; // Assuming shipping is a flat $10 USD
     const total = subtotal + shipping;
 
     const handlePlaceOrder = () => {
@@ -150,7 +157,7 @@ export default function CheckoutPage() {
                                     <p className="font-semibold">{item.product.name}</p>
                                     <p className="text-muted-foreground">Size: {item.size}</p>
                                 </div>
-                                <p className="text-sm font-semibold">${(item.product.price * item.quantity).toFixed(2)}</p>
+                                <p className="text-sm font-semibold">{formatPrice(item.product.price * item.quantity)}</p>
                             </li>
                         ))}
                     </ul>
@@ -158,16 +165,16 @@ export default function CheckoutPage() {
                     <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                             <span className="text-muted-foreground">Subtotal</span>
-                            <span>${subtotal.toFixed(2)}</span>
+                            <span>{formatPrice(subtotal)}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-muted-foreground">Shipping</span>
-                            <span>${shipping.toFixed(2)}</span>
+                            <span>{formatPrice(shipping)}</span>
                         </div>
                         <Separator className="my-2"/>
                         <div className="flex justify-between font-bold text-base">
                             <span>Total</span>
-                            <span>${total.toFixed(2)}</span>
+                            <span>{formatPrice(total)}</span>
                         </div>
                     </div>
                 </CardContent>

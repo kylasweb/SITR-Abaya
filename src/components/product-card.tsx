@@ -16,7 +16,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, className }: ProductCardProps) {
-  const { toggleWishlist, isItemInWishlist } = useStore();
+  const { toggleWishlist, isItemInWishlist, selectedCurrency } = useStore();
   const isInWishlist = isItemInWishlist(product.id);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
@@ -24,6 +24,13 @@ export default function ProductCard({ product, className }: ProductCardProps) {
     e.stopPropagation();
     toggleWishlist(product);
   }
+
+  const convertedPrice = product.price * selectedCurrency.rate;
+  const displayPrice = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: selectedCurrency.code,
+    minimumFractionDigits: 2,
+  }).format(convertedPrice);
 
   return (
     <Card className={cn('overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg group', className)}>
@@ -60,7 +67,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         </Link>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <p className="text-base text-muted-foreground">${product.price.toFixed(2)}</p>
+        <p className="text-base text-muted-foreground">{displayPrice}</p>
       </CardFooter>
       <style jsx>{`
         .link-underline {

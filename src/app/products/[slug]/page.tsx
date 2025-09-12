@@ -23,7 +23,7 @@ import type { Product } from '@/lib/types';
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const { addToCart, toggleWishlist, isItemInWishlist } = useStore();
+  const { addToCart, toggleWishlist, isItemInWishlist, selectedCurrency } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
 
@@ -103,6 +103,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   }
   
   const isInWishlist = isItemInWishlist(product.id);
+  const convertedPrice = product.price * selectedCurrency.rate;
+  const displayPrice = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: selectedCurrency.code,
+    minimumFractionDigits: 2,
+  }).format(convertedPrice);
 
   const handleAddToCart = () => {
     // Since color is always black, we pass it directly.
@@ -119,7 +125,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
         <div className="md:py-8">
           <h1 className="font-headline text-3xl md:text-4xl font-bold">{product.name}</h1>
-          <p className="text-2xl mt-2 text-muted-foreground">${product.price.toFixed(2)}</p>
+          <p className="text-2xl mt-2 text-muted-foreground">{displayPrice}</p>
           <p className="mt-4 text-base text-foreground/80 leading-relaxed">{product.description}</p>
           
           <Separator className="my-6" />

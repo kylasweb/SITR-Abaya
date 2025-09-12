@@ -11,9 +11,40 @@ export type CartItem = {
   color: string;
 };
 
+export type Currency = {
+  code: string;
+  name: string;
+  symbol: string;
+  rate: number; // Rate relative to USD
+};
+
+export const currencies: Currency[] = [
+    { code: 'USD', name: 'United States Dollar', symbol: '$', rate: 1 },
+    { code: 'AED', name: 'United Arab Emirates Dirham', symbol: 'AED', rate: 3.67 },
+    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', rate: 1.52 },
+    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', rate: 1.37 },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', rate: 0.91 },
+    { code: 'CNY', name: 'Chinese Yuan', symbol: '¥', rate: 7.24 },
+    { code: 'EUR', name: 'Euro', symbol: '€', rate: 0.92 },
+    { code: 'GBP', name: 'British Pound Sterling', symbol: '£', rate: 0.79 },
+    { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$', rate: 7.81 },
+    { code: 'INR', name: 'Indian Rupee', symbol: '₹', rate: 83.43 },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', rate: 157.65 },
+    { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'KWD', rate: 0.31 },
+    { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM', rate: 4.71 },
+    { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', rate: 1.63 },
+    { code: 'OMR', name: 'Omani Rial', symbol: 'OMR', rate: 0.38 },
+    { code: 'QAR', name: 'Qatari Riyal', symbol: 'QAR', rate: 3.64 },
+    { code: 'SAR', name: 'Saudi Riyal', symbol: 'SAR', rate: 3.75 },
+    { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$', rate: 1.35 },
+];
+
+
 type StoreContextType = {
   cart: CartItem[];
   wishlist: Product[];
+  selectedCurrency: Currency;
+  setCurrency: (currencyCode: string) => void;
   addToCart: (product: Product, size: string, color: string, quantity: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -57,6 +88,10 @@ const setStorage = (key: string, value: any) => {
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>(() => getStorage('cart', []));
   const [wishlist, setWishlist] = useState<Product[]>(() => getStorage('wishlist', []));
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(() => {
+      const storedCurrencyCode = getStorage('currency', 'USD');
+      return currencies.find(c => c.code === storedCurrencyCode) || currencies[0];
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -66,6 +101,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setStorage('wishlist', wishlist);
   }, [wishlist]);
+  
+  useEffect(() => {
+    setStorage('currency', selectedCurrency.code);
+  }, [selectedCurrency]);
+
+  const setCurrency = (currencyCode: string) => {
+    const currency = currencies.find(c => c.code === currencyCode);
+    if (currency) {
+      setSelectedCurrency(currency);
+    }
+  };
 
   const addToCart = (product: Product, size: string, color: string, quantity: number) => {
     setCart(prevCart => {
@@ -135,6 +181,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value = {
     cart,
     wishlist,
+    selectedCurrency,
+    setCurrency,
     addToCart,
     removeFromCart,
     updateQuantity,

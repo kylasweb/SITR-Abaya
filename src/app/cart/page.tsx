@@ -10,10 +10,17 @@ import { Label } from '@/components/ui/label';
 import { useStore } from '@/lib/store';
 
 export default function CartPage() {
-  const { cart: cartItems, updateQuantity, removeFromCart } = useStore();
+  const { cart: cartItems, updateQuantity, removeFromCart, selectedCurrency } = useStore();
   
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: selectedCurrency.code,
+    }).format(price * selectedCurrency.rate);
+  };
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const shipping = subtotal > 0 ? 10 : 0;
+  const shipping = subtotal > 0 ? 10 : 0; // Assuming shipping is a flat $10 USD
   const total = subtotal + shipping;
 
   return (
@@ -40,7 +47,7 @@ export default function CartPage() {
                           <p className="text-sm text-muted-foreground">Size: {item.size}</p>
                         </div>
                         <div className="flex items-center justify-between mt-2">
-                           <p className="font-semibold">${(item.product.price * item.quantity).toFixed(2)}</p>
+                           <p className="font-semibold">{formatPrice(item.product.price * item.quantity)}</p>
                            <div className="flex items-center border rounded-md">
                               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}><Minus className="w-3 h-3" /></Button>
                               <span className="w-6 text-center text-sm">{item.quantity}</span>
@@ -66,16 +73,16 @@ export default function CartPage() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span>${shipping.toFixed(2)}</span>
+                  <span>{formatPrice(shipping)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatPrice(total)}</span>
                 </div>
                 <div className="space-y-2 pt-2">
                   <Label htmlFor="promo-code">Promo Code</Label>

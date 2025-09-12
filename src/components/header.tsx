@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { useStore } from '@/lib/store';
+import { useStore, currencies } from '@/lib/store';
 import { Badge } from './ui/badge';
 import {
   DropdownMenu,
@@ -25,32 +25,10 @@ const mainNav = [
   { href: '#', label: 'Returns' },
 ];
 
-const currencies = [
-    { code: 'AED', name: 'United Arab Emirates Dirham' },
-    { code: 'AUD', name: 'Australian Dollar' },
-    { code: 'CAD', name: 'Canadian Dollar' },
-    { code: 'CHF', name: 'Swiss Franc' },
-    { code: 'CNY', name: 'Chinese Yuan' },
-    { code: 'EUR', name: 'Euro' },
-    { code: 'GBP', name: 'British Pound Sterling' },
-    { code: 'HKD', name: 'Hong Kong Dollar' },
-    { code: 'INR', name: 'Indian Rupee' },
-    { code: 'JPY', name: 'Japanese Yen' },
-    { code: 'KWD', name: 'Kuwaiti Dinar' },
-    { code: 'MYR', name: 'Malaysian Ringgit' },
-    { code: 'NZD', name: 'New Zealand Dollar' },
-    { code: 'OMR', name: 'Omani Rial' },
-    { code: 'QAR', name: 'Qatari Riyal' },
-    { code: 'SAR', name: 'Saudi Riyal' },
-    { code: 'SGD', name: 'Singapore Dollar' },
-    { code: 'USD', name: 'United States Dollar' },
-]
-
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { cart, wishlist } = useStore();
-  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0].code);
+  const { cart, wishlist, setCurrency } = useStore();
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -119,7 +97,7 @@ export default function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {currencies.map(currency => (
-                   <DropdownMenuItem key={currency.code} onSelect={() => setSelectedCurrency(currency.code)}>
+                   <DropdownMenuItem key={currency.code} onSelect={() => setCurrency(currency.code)}>
                     {currency.code} - {currency.name}
                    </DropdownMenuItem>
                 ))}
@@ -145,7 +123,7 @@ export default function Header() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         {currencies.map(currency => (
-                        <DropdownMenuItem key={currency.code} onSelect={() => setSelectedCurrency(currency.code)}>
+                        <DropdownMenuItem key={currency.code} onSelect={() => setCurrency(currency.code)}>
                             {currency.code} - {currency.name}
                         </DropdownMenuItem>
                         ))}
