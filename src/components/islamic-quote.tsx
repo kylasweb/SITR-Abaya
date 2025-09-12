@@ -31,7 +31,7 @@ export default function IslamicQuote() {
 
   return (
     <div className="container mx-auto px-4 py-12 text-center">
-      <blockquote className="font-headline text-xl md:text-2xl italic text-foreground/80 max-w-4xl mx-auto">
+      <blockquote className="font-headline text-xl md:text-2xl italic text-primary max-w-4xl mx-auto">
         "{currentQuote.text}"
       </blockquote>
       <p className="mt-4 text-sm text-muted-foreground tracking-wide">
