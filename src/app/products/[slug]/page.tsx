@@ -36,7 +36,6 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const { addToCart, toggleWishlist, isItemInWishlist } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(product?.variants.size[0] || '');
-  const [selectedColor, setSelectedColor] = useState(product?.variants.color[0] || '');
   
   if (!product) {
     notFound();
@@ -45,7 +44,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const isInWishlist = isItemInWishlist(product.id);
 
   const handleAddToCart = () => {
-    addToCart(product, selectedSize, selectedColor, quantity);
+    // Since color is always black, we pass it directly.
+    addToCart(product, selectedSize, 'Black', quantity);
   };
 
   const incrementQuantity = () => setQuantity(prev => prev + 1);

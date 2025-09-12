@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Product } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -32,10 +32,40 @@ export function useStore() {
   return context;
 }
 
+// Helper functions to interact with localStorage
+const getStorage = (key: string, defaultValue: any) => {
+  if (typeof window === 'undefined') return defaultValue;
+  const storedValue = localStorage.getItem(key);
+  try {
+    return storedValue ? JSON.parse(storedValue) : defaultValue;
+  } catch (error) {
+    console.error(`Error parsing localStorage key "${key}":`, error);
+    return defaultValue;
+  }
+};
+
+const setStorage = (key: string, value: any) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Error setting localStorage key "${key}":`, error);
+  }
+};
+
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => getStorage('cart', []));
+  const [wishlist, setWishlist] = useState<Product[]>(() => getStorage('wishlist', []));
   const { toast } = useToast();
+
+  useEffect(() => {
+    setStorage('cart', cart);
+  }, [cart]);
+
+  useEffect(() => {
+    setStorage('wishlist', wishlist);
+  }, [wishlist]);
 
   const addToCart = (product: Product, size: string, color: string, quantity: number) => {
     setCart(prevCart => {
@@ -60,8 +90,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFromCart = (productId: string) => {
-    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
-    toast({ title: "Removed from cart", description: `Item has been removed from your cart.` });
+    setCart(prevCart => {
+      const itemToRemove = prevCart.find(item => item.product.id === productId);
+      if (itemToRemove) {
+        toast({ title: "Removed from cart", description: `${itemToRemove.product.name} has been removed.` });
+      }
+      return prevCart.filter(item => item.product.id !== productId)
+    });
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
