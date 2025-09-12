@@ -50,7 +50,7 @@ export default function ProductTable({ products }: ProductTableProps) {
                 alt={product.name}
                 className="aspect-square rounded-md object-cover"
                 height="64"
-                src={product.images[0].url}
+                src={product.images[0]?.url || 'https://placehold.co/64x64'}
                 width="64"
               />
             </TableCell>

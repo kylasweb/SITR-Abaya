@@ -47,7 +47,14 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return (
       <div className="container mx-auto px-4 py-8 md:py-16">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
-          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-muted animate-pulse"></div>
+          <div className="flex flex-col gap-4">
+            <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-muted animate-pulse"></div>
+            <div className="grid grid-cols-5 gap-2">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="aspect-square w-full bg-muted animate-pulse rounded-md"></div>
+              ))}
+            </div>
+          </div>
           <div className="md:py-8">
             <div className="h-10 w-3/4 bg-muted animate-pulse rounded-md"></div>
             <div className="h-8 w-1/4 bg-muted animate-pulse rounded-md mt-4"></div>

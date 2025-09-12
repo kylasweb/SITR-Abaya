@@ -7,52 +7,196 @@
       "imageHint": "abaya fashion"
     },
     {
-      "id": "abaya-1",
+      "id": "abaya-1-front",
       "description": "Front view of a black silk abaya with intricate embroidery.",
       "imageUrl": "https://picsum.photos/seed/abaya1/800/1200",
       "imageHint": "black abaya"
     },
+     {
+      "id": "abaya-1-side",
+      "description": "Side view of a black silk abaya, showing its flow.",
+      "imageUrl": "https://picsum.photos/seed/abaya1side/800/1200",
+      "imageHint": "silk abaya"
+    },
+     {
+      "id": "abaya-1-back",
+      "description": "Back view of a black silk abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya1back/800/1200",
+      "imageHint": "black abaya"
+    },
+     {
+      "id": "abaya-1-detail",
+      "description": "Close-up of the silver embroidery on the cuff of a black silk abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya1detail/800/1200",
+      "imageHint": "embroidery detail"
+    },
     {
-      "id": "abaya-2",
+      "id": "abaya-2-front",
       "description": "A flowing beige abaya made of lightweight linen.",
       "imageUrl": "https://picsum.photos/seed/abaya2/800/1200",
       "imageHint": "beige abaya"
     },
+     {
+      "id": "abaya-2-side",
+      "description": "Side view of a beige linen abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya2side/800/1200",
+      "imageHint": "linen abaya"
+    },
     {
-      "id": "abaya-3",
+      "id": "abaya-2-back",
+      "description": "Back view of a beige linen abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya2back/800/1200",
+      "imageHint": "beige abaya"
+    },
+    {
+      "id": "abaya-2-detail",
+      "description": "Close-up of the texture of the linen fabric.",
+      "imageUrl": "https://picsum.photos/seed/abaya2detail/800/1200",
+      "imageHint": "fabric texture"
+    },
+    {
+      "id": "abaya-3-front",
       "description": "An emerald green velvet abaya for special occasions.",
       "imageUrl": "https://picsum.photos/seed/abaya3/800/1200",
       "imageHint": "green abaya"
     },
     {
-      "id": "abaya-4",
+      "id": "abaya-3-side",
+      "description": "Side view of an emerald green velvet abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya3side/800/1200",
+      "imageHint": "velvet abaya"
+    },
+    {
+      "id": "abaya-3-back",
+      "description": "Back view of an emerald green velvet abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya3back/800/1200",
+      "imageHint": "green abaya"
+    },
+    {
+      "id": "abaya-3-detail",
+      "description": "Close-up of the rich texture of the velvet fabric.",
+      "imageUrl": "https://picsum.photos/seed/abaya3detail/800/1200",
+      "imageHint": "velvet texture"
+    },
+    {
+      "id": "abaya-4-front",
       "description": "A modern navy blue abaya with a minimalist design.",
       "imageUrl": "https://picsum.photos/seed/abaya4/800/1200",
       "imageHint": "blue abaya"
     },
+     {
+      "id": "abaya-4-side",
+      "description": "Side view of a modern navy blue abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya4side/800/1200",
+      "imageHint": "modern abaya"
+    },
+     {
+      "id": "abaya-4-back",
+      "description": "Back view of a modern navy blue abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya4back/800/1200",
+      "imageHint": "navy abaya"
+    },
+     {
+      "id": "abaya-4-detail",
+      "description": "Close-up of the pocket detail on the navy blue abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya4detail/800/1200",
+      "imageHint": "pocket detail"
+    },
     {
-      "id": "abaya-5",
+      "id": "abaya-5-front",
       "description": "A white cotton abaya perfect for everyday wear.",
       "imageUrl": "https://picsum.photos/seed/abaya5/800/1200",
       "imageHint": "white abaya"
     },
     {
-      "id": "abaya-6",
+      "id": "abaya-5-side",
+      "description": "Side view of a white cotton abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya5side/800/1200",
+      "imageHint": "cotton abaya"
+    },
+    {
+      "id": "abaya-5-back",
+      "description": "Back view of a white cotton abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya5back/800/1200",
+      "imageHint": "white abaya"
+    },
+    {
+      "id": "abaya-5-detail",
+      "description": "Close-up of the texture of the cotton fabric.",
+      "imageUrl": "https://picsum.photos/seed/abaya5detail/800/1200",
+      "imageHint": "fabric texture"
+    },
+    {
+      "id": "abaya-6-front",
       "description": "A luxurious charcoal grey abaya with pearl details.",
       "imageUrl": "https://picsum.photos/seed/abaya6/800/1200",
       "imageHint": "grey abaya"
     },
     {
-      "id": "abaya-7",
+      "id": "abaya-6-side",
+      "description": "Side view of a charcoal grey abaya showing pearl details on the sleeve.",
+      "imageUrl": "https://picsum.photos/seed/abaya6side/800/1200",
+      "imageHint": "pearl details"
+    },
+    {
+      "id": "abaya-6-back",
+      "description": "Back view of a charcoal grey abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya6back/800/1200",
+      "imageHint": "grey abaya"
+    },
+    {
+      "id": "abaya-6-detail",
+      "description": "Close-up of the delicate pearl embellishments.",
+      "imageUrl": "https://picsum.photos/seed/abaya6detail/800/1200",
+      "imageHint": "pearl embellishments"
+    },
+    {
+      "id": "abaya-7-front",
       "description": "A deep burgundy abaya with a matching sheila.",
       "imageUrl": "https://picsum.photos/seed/abaya7/800/1200",
       "imageHint": "burgundy abaya"
     },
     {
-      "id": "abaya-8",
+      "id": "abaya-7-side",
+      "description": "Side view of a deep burgundy abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya7side/800/1200",
+      "imageHint": "burgundy abaya"
+    },
+    {
+      "id": "abaya-7-back",
+      "description": "Back view of a deep burgundy abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya7back/800/1200",
+      "imageHint": "burgundy abaya"
+    },
+    {
+      "id": "abaya-7-detail",
+      "description": "Close-up of the flowing crepe fabric.",
+      "imageUrl": "https://picsum.photos/seed/abaya7detail/800/1200",
+      "imageHint": "crepe fabric"
+    },
+    {
+      "id": "abaya-8-front",
       "description": "A dusty rose pink abaya with delicate lace trim.",
       "imageUrl": "https://picsum.photos/seed/abaya8/800/1200",
       "imageHint": "pink abaya"
+    },
+    {
+      "id": "abaya-8-side",
+      "description": "Side view of a dusty rose pink abaya showing the lace detail.",
+      "imageUrl": "https://picsum.photos/seed/abaya8side/800/1200",
+      "imageHint": "lace detail"
+    },
+    {
+      "id": "abaya-8-back",
+      "description": "Back view of a dusty rose pink abaya.",
+      "imageUrl": "https://picsum.photos/seed/abaya8back/800/1200",
+      "imageHint": "pink abaya"
+    },
+    {
+      "id": "abaya-8-detail",
+      "description": "Close-up of the intricate lace trim.",
+      "imageUrl": "https://picsum.photos/seed/abaya8detail/800/1200",
+      "imageHint": "lace trim"
     }
   ]
 }
