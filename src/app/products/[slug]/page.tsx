@@ -1,7 +1,7 @@
 'use client';
 import { notFound } from 'next/navigation';
 import { Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
-import { products } from '@/lib/data';
+import { getProducts } from '@/lib/data';
 import ProductGallery from '@/components/product-gallery';
 import RelatedProducts from '@/components/related-products';
 import { Button } from '@/components/ui/button';
@@ -13,30 +13,51 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { useStore } from '@/lib/store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import type { Product } from '@/lib/types';
 
-// We are fetching all products and then finding the one with the matching slug.
-// This is not optimal for a large number of products.
-// In a real-world application, you would fetch only the required product by its slug.
-// However, since this page is dynamically rendered, we need to provide `generateStaticParams`
-// to pre-build all product pages at build time for better performance.
-// The `dynamic` export is not required here because `generateStaticParams` is used.
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const products = await getProducts();
   return products.map((product) => ({
     slug: product.slug,
   }));
 }
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
-  const product = products.find((p) => p.slug === params.slug);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const { addToCart, toggleWishlist, isItemInWishlist } = useStore();
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState(product?.variants.size[0] || '');
+  const [selectedSize, setSelectedSize] = useState('');
+
+  useEffect(() => {
+    async function fetchProduct() {
+      setLoading(true);
+      const products = await getProducts();
+      const foundProduct = products.find((p) => p.slug === params.slug) || null;
+      setProduct(foundProduct);
+      if (foundProduct?.variants.size[0]) {
+        setSelectedSize(foundProduct.variants.size[0]);
+      }
+      setLoading(false);
+    }
+
+    fetchProduct();
+  }, [params.slug]);
   
+  if (loading) {
+    // You can return a loading skeleton here
+    return (
+      <div className="container mx-auto px-4 py-8 md:py-16">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     notFound();
   }
@@ -66,7 +87,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           <div className="space-y-6">
             <div>
               <p className="text-sm font-semibold mb-2">Size</p>
-              <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex flex-wrap gap-2">
+              <RadioGroup value={selectedSize} onValuechange={setSelectedSize} className="flex flex-wrap gap-2">
                 {product.variants.size.map(size => (
                   <div key={size}>
                     <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />

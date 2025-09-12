@@ -1,9 +1,11 @@
-import { products } from '@/lib/data';
+import { getProducts } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import ProductFilters from '@/components/product-filters';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts();
+  
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <header className="mb-8 md:mb-12 text-center">

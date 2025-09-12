@@ -2,14 +2,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import { products } from '@/lib/data';
+import { getProducts } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import IslamicQuote from '@/components/islamic-quote';
 import { Gem, HandHeart, Leaf, Palette, Ruler, Truck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function Home() {
+export default async function Home() {
+  const products = await getProducts();
   const featuredProducts = products.slice(0, 4);
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
 
@@ -70,56 +71,56 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
-            <Card className="bg-secondary/30 p-4 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-              <Gem className="h-8 w-8 text-primary mb-3" strokeWidth={1.5}/>
-              <CardTitle className="font-headline text-lg font-semibold mb-1">Exquisite Quality</CardTitle>
+            <Card className="bg-transparent p-2 flex flex-col items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <Gem className="h-7 w-7 text-primary mb-2" strokeWidth={1.5}/>
+              <CardTitle className="font-headline text-base font-semibold mb-1">Exquisite Quality</CardTitle>
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Our abayas are crafted from the finest materials, ensuring a luxurious feel and a lasting impression.
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-4 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-              <Palette className="h-8 w-8 text-primary mb-3" strokeWidth={1.5}/>
-              <CardTitle className="font-headline text-lg font-semibold mb-1">Timeless Designs</CardTitle>
+            <Card className="bg-transparent p-2 flex flex-col items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <Palette className="h-7 w-7 text-primary mb-2" strokeWidth={1.5}/>
+              <CardTitle className="font-headline text-base font-semibold mb-1">Timeless Designs</CardTitle>
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Each piece is thoughtfully designed, blending traditional modesty with contemporary elegance.
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-4 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-              <Leaf className="h-8 w-8 text-primary mb-3" strokeWidth={1.5}/>
-              <CardTitle className="font-headline text-lg font-semibold mb-1">Ethically Made</CardTitle>
+            <Card className="bg-transparent p-2 flex flex-col items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <Leaf className="h-7 w-7 text-primary mb-2" strokeWidth={1.5}/>
+              <CardTitle className="font-headline text-base font-semibold mb-1">Ethically Made</CardTitle>
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   We are committed to ethical practices, ensuring our garments are made with integrity and care.
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-4 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-              <HandHeart className="h-8 w-8 text-primary mb-3" strokeWidth={1.5}/>
-              <CardTitle className="font-headline text-lg font-semibold mb-1">Customer-Centric</CardTitle>
+            <Card className="bg-transparent p-2 flex flex-col items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <HandHeart className="h-7 w-7 text-primary mb-2" strokeWidth={1.5}/>
+              <CardTitle className="font-headline text-base font-semibold mb-1">Customer-Centric</CardTitle>
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Your satisfaction is our priority. We offer a shopping experience that is as seamless as it is personal.
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-4 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-              <Ruler className="h-8 w-8 text-primary mb-3" strokeWidth={1.5}/>
-              <CardTitle className="font-headline text-lg font-semibold mb-1">Inclusive Sizing</CardTitle>
+            <Card className="bg-transparent p-2 flex flex-col items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <Ruler className="h-7 w-7 text-primary mb-2" strokeWidth={1.5}/>
+              <CardTitle className="font-headline text-base font-semibold mb-1">Inclusive Sizing</CardTitle>
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   We celebrate all body types, offering special collections for petite women and a range of inclusive sizes.
                 </p>
               </CardContent>
             </Card>
-            <Card className="bg-secondary/30 p-4 flex flex-col items-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-              <Truck className="h-8 w-8 text-primary mb-3" strokeWidth={1.5}/>
-              <CardTitle className="font-headline text-lg font-semibold mb-1">Reliable Service</CardTitle>
+            <Card className="bg-transparent p-2 flex flex-col items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <Truck className="h-7 w-7 text-primary mb-2" strokeWidth={1.5}/>
+              <CardTitle className="font-headline text-base font-semibold mb-1">Reliable Service</CardTitle>
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Enjoy seamless shopping with fast, worldwide shipping and dedicated customer support.
                 </p>
               </CardContent>

@@ -1,5 +1,5 @@
 'use client';
-import { products } from "@/lib/data"
+import { getProducts } from "@/lib/data"
 import ProductCard from "./product-card"
 import {
   Carousel,
@@ -24,12 +24,13 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
     async function fetchRelatedProducts() {
       try {
         setLoading(true);
+        const allProducts = await getProducts();
         const { relatedProductIds } = await suggestRelatedProducts({ productId: currentProductId });
-        const relatedProducts = products.filter(p => relatedProductIds.includes(p.id));
+        const relatedProducts = allProducts.filter(p => relatedProductIds.includes(p.id));
         
         // If AI returns no products, or less than a few, fill with random ones
         if (relatedProducts.length < 5) {
-          const fallback = products.filter(p => p.id !== currentProductId && !relatedProductIds.includes(p.id))
+          const fallback = allProducts.filter(p => p.id !== currentProductId && !relatedProductIds.includes(p.id))
                                    .slice(0, 5 - relatedProducts.length);
           setRelated([...relatedProducts, ...fallback]);
         } else {
@@ -39,7 +40,8 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
       } catch (error) {
         console.error("Failed to fetch related products:", error);
         // Fallback to random products on error
-        const fallback = products.filter(p => p.id !== currentProductId).slice(0, 5);
+        const allProducts = await getProducts();
+        const fallback = allProducts.filter(p => p.id !== currentProductId).slice(0, 5);
         setRelated(fallback);
       } finally {
         setLoading(false);

@@ -1,5 +1,7 @@
 import { Product } from './types';
 import { PlaceHolderImages } from './placeholder-images';
+import { db } from './firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const getImage = (id: string) => {
   const img = PlaceHolderImages.find((i) => i.id === id);
@@ -10,6 +12,8 @@ const getImage = (id: string) => {
   return { id, url: img.imageUrl, alt: img.description, aiHint: img.imageHint };
 };
 
+// The products array is now kept as a fallback or for seeding,
+// but the main function will be getProducts() which fetches from Firestore.
 export const products: Product[] = [
   {
     id: 'prod_001',
@@ -132,3 +136,31 @@ export const products: Product[] = [
     tags: ['lace', 'feminine', 'romantic'],
   },
 ];
+
+// Fetches all products from Firestore.
+// Caching and error handling would be added in a production scenario.
+export async function getProducts(): Promise<Product[]> {
+  try {
+    const productsCollection = collection(db, "products");
+    const productSnapshot = await getDocs(productsCollection);
+    const productList = productSnapshot.docs.map(doc => {
+      const data = doc.data();
+      // Re-hydrate image URLs from placeholder data
+      const hydratedImages = data.images.map((img: { id: string; }) => getImage(img.id));
+      return { ...data, images: hydratedImages } as Product;
+    });
+
+    if (productList.length === 0) {
+      // If Firestore is empty, return the static data as a fallback.
+      // In a real app, you might have a seeding script.
+      console.warn("Firestore 'products' collection is empty. Falling back to static data.");
+      return products;
+    }
+
+    return productList;
+  } catch (error) {
+    console.error("Error fetching products from Firestore:", error);
+    // Fallback to static data on error
+    return products;
+  }
+}
