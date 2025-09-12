@@ -20,7 +20,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <Button variant="outline" className="w-full">Edit Profile</Button>
-              <Button variant="link" asChild className="w-full text-destructive px-0 mt-2"><Link href="/login">Log Out</Link></Button>
+              {/* The logout functionality will be handled differently for customer vs admin */}
             </CardContent>
           </Card>
         </div>

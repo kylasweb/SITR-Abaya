@@ -17,17 +17,30 @@ import {
   Users,
   Bot,
   User,
+  LogOut,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { logoutAction } from './login/actions';
+
+const ADMIN_COOKIE_NAME = 'sitr-admin-auth';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+  const authCookie = cookieStore.get(ADMIN_COOKIE_NAME);
+
+  if (authCookie?.value !== process.env.ADMIN_PASSWORD) {
+    redirect('/admin/login');
+  }
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -84,27 +97,25 @@ export default function AdminLayout({
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback>AD</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-              <span className="text-sm font-semibold">Admin User</span>
-              <span className="text-xs text-muted-foreground">
-                admin@sitr.com
-              </span>
-            </div>
-          </div>
+          <form action={logoutAction} className="w-full">
+            <Button variant="ghost" className="w-full justify-start">
+              <LogOut />
+              <span>Log Out</span>
+            </Button>
+          </form>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <header className="flex h-12 items-center justify-between border-b px-4 md:justify-end">
           <SidebarTrigger className="md:hidden" />
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/account/profile">
-              <User />
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+             <Avatar className="h-8 w-8">
+              <AvatarFallback>A</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold">Admin</span>
+            </div>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           {children}
