@@ -53,32 +53,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <section className="py-16 md:py-24 bg-secondary/50">
-        <div className="container mx-auto px-4 text-center">
-           <h2 className="font-headline text-3xl md:text-4xl font-semibold">The Future of Fashion is AI</h2>
-           <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-            Our innovative AI tools help you find the perfect abaya and create stunning product listings with ease.
-          </p>
-          <div className="grid md:grid-cols-2 gap-8 mt-12 max-w-4xl mx-auto">
-            <div className="p-8 rounded-lg border bg-background text-left">
-              <h3 className="font-headline text-2xl font-semibold">AI Recommendations</h3>
-              <p className="mt-2 text-muted-foreground">
-                Receive personalized suggestions based on your unique style, browsing history, and wishlist. Our AI understands you.
-              </p>
-            </div>
-             <div className="p-8 rounded-lg border bg-background text-left">
-              <h3 className="font-headline text-2xl font-semibold">AI Description Writer</h3>
-              <p className="mt-2 text-muted-foreground">
-                For our sellers, we offer a powerful tool to generate beautiful, compelling product descriptions in seconds.
-              </p>
-               <Button asChild variant="link" className="px-0 mt-2">
-                <Link href="/admin/generate-description">Try the Generator</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
