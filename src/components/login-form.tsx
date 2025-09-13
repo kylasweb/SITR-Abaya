@@ -41,7 +41,7 @@ export default function LoginForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (state.message && !state.success) {
+    if (state.timestamp > initialState.timestamp && state.message && !state.success) {
       toast({
         variant: "destructive",
         title: "Login Failed",

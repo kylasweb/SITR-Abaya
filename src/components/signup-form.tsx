@@ -8,15 +8,9 @@ import { signupWithEmailAndPasswordAction, type FormState } from '@/app/auth/act
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { FormLabel } from './ui/form';
 
 const initialState: FormState = {
   message: '',
@@ -46,7 +40,7 @@ export default function SignupForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (state.message && !state.success) {
+    if (state.timestamp > initialState.timestamp && state.message && !state.success) {
       toast({
         variant: "destructive",
         title: "Signup Failed",
