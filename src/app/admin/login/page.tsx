@@ -13,6 +13,12 @@ export default function AdminLoginPage() {
           <p className="text-muted-foreground mt-2">Please enter the password to access the dashboard.</p>
         </div>
         <AdminLoginForm />
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="mt-4 rounded-lg border border-yellow-300 bg-yellow-50 p-3 text-center text-xs text-yellow-800">
+            <strong>Dev Note:</strong> The admin password is <br/>
+            <code className="font-mono font-semibold">{process.env.ADMIN_PASSWORD || '(not set)'}</code>
+          </div>
+        )}
       </div>
     </div>
   );
