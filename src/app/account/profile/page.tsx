@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { logoutAction } from '@/app/auth/actions';
 
@@ -9,10 +9,31 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useStore } from '@/lib/store';
+import { useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
+  const { clearCart } = useStore();
+  const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+
+  // Handle post-order success
+  useEffect(() => {
+    if (searchParams.get('order_success') === 'true') {
+        toast({
+            title: "Order Placed Successfully!",
+            description: "Thank you for your purchase. A confirmation has been simulated.",
+        });
+        clearCart();
+        // Clean up the URL
+        router.replace('/account/profile');
+    }
+  }, [searchParams, clearCart, toast, router]);
+
 
   // Redirect to login if not authenticated and not loading
   if (!loading && !user) {

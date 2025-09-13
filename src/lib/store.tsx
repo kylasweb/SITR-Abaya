@@ -159,6 +159,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   
   const clearCart = () => {
     setCart([]);
+    setStorage('cart', []);
   }
 
   const toggleWishlist = (product: Product) => {
