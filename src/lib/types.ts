@@ -83,3 +83,50 @@ export type UserData = {
     email: string;
     createdAt: Date;
 }
+
+// --- Site Settings Types ---
+
+export type GeneralSettings = {
+    siteTitle: string;
+    tagline: string;
+    contactEmail: string;
+}
+
+export type AppearanceSettings = {
+    primaryColor: string;
+    secondaryColor: string;
+    accentColor: string;
+    backgroundColor: string;
+}
+
+export type NavigationLink = {
+    label: string;
+    url: string;
+}
+
+export type NavigationSettings = {
+    header: NavigationLink[];
+}
+
+export type PaymentGatewaySettings = {
+    enabled: boolean;
+    keyId?: string;
+    keySecret?: string;
+    merchantId?: string;
+    saltKey?: string;
+    merchantKey?: string;
+}
+
+export type PaymentSettings = {
+    razorpay: PaymentGatewaySettings;
+    phonepe: PaymentGatewaySettings;
+    paytm: PaymentGatewaySettings;
+}
+
+
+export type SiteSettings = {
+    general: GeneralSettings;
+    appearance: AppearanceSettings;
+    navigation: NavigationSettings;
+    payments: PaymentSettings;
+}

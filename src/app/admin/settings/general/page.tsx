@@ -2,8 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getSiteSettings } from "@/lib/data";
 
-export default function GeneralSettingsPage() {
+export default async function GeneralSettingsPage() {
+  const settings = await getSiteSettings();
+
   return (
     <div className="max-w-3xl mx-auto">
        <header className="mb-8">
@@ -22,15 +25,15 @@ export default function GeneralSettingsPage() {
         <CardContent className="space-y-6">
             <div className="space-y-2">
                 <Label htmlFor="site-title">Site Title</Label>
-                <Input id="site-title" defaultValue="SITR Abaya" />
+                <Input id="site-title" defaultValue={settings.general.siteTitle} />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="tagline">Tagline</Label>
-                <Input id="tagline" defaultValue="Elegance Redefined, Modesty Embraced." />
+                <Input id="tagline" defaultValue={settings.general.tagline} />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="contact-email">Contact Email</Label>
-                <Input id="contact-email" type="email" defaultValue="support@sitr.com" />
+                <Input id="contact-email" type="email" defaultValue={settings.general.contactEmail} />
             </div>
              <Button>Save Changes</Button>
         </CardContent>

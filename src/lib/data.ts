@@ -1,4 +1,4 @@
-import { Product, Order, EditableProduct, UserData } from './types';
+import { Product, Order, EditableProduct, UserData, SiteSettings } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import { db } from './firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy } from 'firebase/firestore';
@@ -183,5 +183,55 @@ export async function getAllUsers(): Promise<UserData[]> {
     } catch (error) {
         console.error("Error fetching all users from Firestore:", error);
         return [];
+    }
+}
+
+const defaultSettings: SiteSettings = {
+    general: {
+        siteTitle: 'SITR Abaya',
+        tagline: 'Elegance Redefined, Modesty Embraced.',
+        contactEmail: 'support@sitr.com'
+    },
+    appearance: {
+        primaryColor: '#000000',
+        secondaryColor: '#F6E9C7',
+        accentColor: '#F6E9C7',
+        backgroundColor: '#FAF8F5'
+    },
+    navigation: {
+        header: [
+            { label: 'Abayas', url: '/products' },
+            { label: 'Hijabs', url: '/collections/coming-soon' }
+        ]
+    },
+    payments: {
+        razorpay: { enabled: false, keyId: '', keySecret: '' },
+        phonepe: { enabled: false, merchantId: '', saltKey: '' },
+        paytm: { enabled: false, merchantId: '', merchantKey: '' }
+    }
+};
+
+// Fetches the site settings from Firestore. Returns defaults if not found.
+export async function getSiteSettings(): Promise<SiteSettings> {
+    try {
+        const settingsDocRef = doc(db, 'settings', 'siteConfig');
+        const docSnap = await getDoc(settingsDocRef);
+
+        if (docSnap.exists()) {
+            // Merge with defaults to ensure all keys are present
+            const dbSettings = docSnap.data();
+            return {
+                general: { ...defaultSettings.general, ...dbSettings.general },
+                appearance: { ...defaultSettings.appearance, ...dbSettings.appearance },
+                navigation: { ...defaultSettings.navigation, ...dbSettings.navigation },
+                payments: { ...defaultSettings.payments, ...dbSettings.payments },
+            };
+        } else {
+            console.warn("Site settings not found in Firestore. Returning default settings.");
+            return defaultSettings;
+        }
+    } catch (error) {
+        console.error("Error fetching site settings:", error);
+        return defaultSettings;
     }
 }
