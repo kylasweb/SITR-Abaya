@@ -11,8 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { generateContentAction, suggestContentAction } from '@/app/admin/ai-content-studio/actions';
 
+declare const puter: any;
 
 interface SubmitButtonProps {
   pending: boolean;
@@ -78,51 +78,40 @@ export default function AiContentStudio() {
   const handleInputChange = (field: keyof typeof formValues, value: string) => {
     setFormValues(prev => ({ ...prev, [field]: value }));
   };
+
+  const handlePuterRequest = async (prompt: string): Promise<string | null> => {
+    if (typeof puter === 'undefined') {
+        toast({ variant: "destructive", title: "Puter.js not found", description: "Puter.js script might be blocked or not loaded." });
+        return null;
+    }
+    try {
+        const result = await puter.ai.getCompletion(prompt);
+        return result;
+    } catch (error) {
+        console.error(error);
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred. Check the console.";
+        toast({ variant: "destructive", title: "AI Request Failed", description: errorMessage });
+        return null;
+    }
+  };
   
   const getSuggestion = async (prompt: string, field: keyof typeof formValues) => {
     setIsSuggesting(prev => ({ ...prev, [field]: true }));
-    try {
-        const result = await suggestContentAction(prompt);
-        if (result.success && result.content) {
-            handleInputChange(field, result.content);
-        } else {
-            toast({ variant: "destructive", title: "Suggestion Failed", description: result.message });
-        }
-    } catch (error) {
-        console.error(error);
-        const errorMessage = error instanceof Error ? error.message : "Please check the console for details.";
-        toast({ variant: "destructive", title: "An unexpected error occurred.", description: errorMessage });
-    } finally {
-        setIsSuggesting(prev => ({ ...prev, [field]: false }));
+    const result = await handlePuterRequest(prompt);
+    if (result) {
+        handleInputChange(field, result);
     }
+    setIsSuggesting(prev => ({ ...prev, [field]: false }));
   };
 
   const handleGeneration = async (generatorType: string, prompt: string) => {
     setIsLoading(true);
     setGeneratedContent(prev => ({ ...prev, [generatorType]: '' }));
-
-    try {
-      const result = await generateContentAction(prompt);
-      if (result.success && result.content) {
-        setGeneratedContent(prev => ({ ...prev, [generatorType]: result.content! }));
-      } else {
-         toast({
-          variant: "destructive",
-          title: "Generation Failed",
-          description: result.message,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      const errorMessage = error instanceof Error ? error.message : "Please check the console for details.";
-      toast({
-        variant: "destructive",
-        title: "An unexpected error occurred.",
-        description: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
+    const result = await handlePuterRequest(prompt);
+     if (result) {
+        setGeneratedContent(prev => ({ ...prev, [generatorType]: result }));
     }
+    setIsLoading(false);
   };
   
   const createProductDescription = (e: FormEvent<HTMLFormElement>) => {
@@ -308,7 +297,7 @@ Blog Post Ideas:`;
                         <Select name="tone" value={formValues.sm_tone} onValueChange={(v) => handleInputChange('sm_tone', v)}>
                              <SelectTrigger id="tone-sm">
                                 <SelectValue placeholder="Select tone" />
-                            </SelectTrigger>
+                            </Trigger>
                             <SelectContent>
                                 <SelectItem value="Elegant">Elegant</SelectItem>
                                 <SelectItem value="Excited">Excited</SelectItem>
@@ -380,5 +369,3 @@ Blog Post Ideas:`;
     </Tabs>
   );
 }
-
-    
