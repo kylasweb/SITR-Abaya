@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useActionState } from 'react';
 import { Bot, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -64,10 +64,16 @@ export default function AiContentStudio() {
     setGeneratedContent(prev => ({ ...prev, [generatorType]: '' }));
 
     try {
-      if (typeof puter === 'undefined' || typeof puter.ai.chat !== 'function') {
-        throw new Error('Puter.js AI is not available.');
+      if (typeof puter === 'undefined') {
+        throw new Error('Puter.js is not available.');
       }
       
+      // Check if user is authenticated with Puter
+      if (!(await puter.auth.isLoggedIn())) {
+        // If not, prompt them to log in
+        await puter.auth.prompt();
+      }
+
       const result = await puter.ai.chat(prompt);
 
       if (result) {
