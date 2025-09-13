@@ -6,7 +6,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { StoreProvider } from '@/lib/store';
 import { AuthProvider } from '@/lib/auth';
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 
 
 export const metadata: Metadata = {
@@ -19,8 +19,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = headers();
-  const pathname = headersList.get('x-next-pathname') || '';
+  const pathname = cookies().get('x-next-pathname')?.value || '';
   const isAdminRoute = pathname.startsWith('/admin');
   const isLoginPage = pathname === '/admin/login';
 
