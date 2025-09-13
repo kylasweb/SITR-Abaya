@@ -31,9 +31,9 @@ export async function addProductAction(
     const category = formData.get("category") as string;
     
     // For array fields from the form
-    const tags = formData.getAll("tags").map(tag => (tag as string).split('.value')[0]).filter(Boolean);
-    const sizes = formData.getAll("sizes").map(size => (size as string).split('.value')[0]).filter(Boolean);
-    const materials = formData.getAll("materials").map(material => (material as string).split('.value')[0]).filter(Boolean);
+    const tags = formData.getAll("tags").map(tag => (tag as string)).filter(Boolean);
+    const sizes = formData.getAll("sizes").map(size => (size as string)).filter(Boolean);
+    const materials = formData.getAll("materials").map(material => (material as string)).filter(Boolean);
     const imageIds = (formData.get("imageIds") as string).split(',').map(id => id.trim());
 
     // Basic validation
