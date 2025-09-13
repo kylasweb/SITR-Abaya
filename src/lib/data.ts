@@ -1,7 +1,7 @@
-import { Product } from './types';
+import { Product, Order } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import { db } from './firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
 const getImage = (id: string) => {
   const img = PlaceHolderImages.find((i) => i.id === id);
@@ -138,7 +138,6 @@ export const localProducts: Product[] = [
 
 
 // Fetches all products from Firestore.
-// Caching and error handling would be added in a production scenario.
 export async function getProducts(): Promise<Product[]> {
   try {
     const productsCollection = collection(db, "products");
@@ -162,5 +161,37 @@ export async function getProducts(): Promise<Product[]> {
     // On error (e.g. API not enabled, permissions issue), fall back to local data.
     console.warn("Serving local data due to Firestore fetch error.");
     return localProducts;
+  }
+}
+
+// Fetches all orders for a given user ID from Firestore.
+export async function getOrdersByUserId(userId: string): Promise<Order[]> {
+  if (!userId) return [];
+
+  try {
+    const ordersCollection = collection(db, 'orders');
+    const q = query(ordersCollection, where('userId', '==', userId), orderBy('createdAt', 'desc'));
+    const orderSnapshot = await getDocs(q);
+
+    if (orderSnapshot.empty) {
+      return [];
+    }
+
+    const orderList = orderSnapshot.docs.map(doc => {
+      const data = doc.data();
+      // The createdAt and updatedAt fields are Firestore Timestamps.
+      // We'll convert them to JS Date objects for easier use on the client.
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt.toDate(),
+        updatedAt: data.updatedAt.toDate(),
+      } as Order;
+    });
+
+    return orderList;
+  } catch (error) {
+    console.error("Error fetching orders from Firestore:", error);
+    return []; // Return empty array on error
   }
 }

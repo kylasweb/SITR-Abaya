@@ -86,7 +86,7 @@ export async function placeOrderAction(
 
     // --- Post-Order Actions ---
 
-    // Revalidate paths that show order data. We will use these later.
+    // Revalidate paths that show order data.
     revalidatePath("/account/profile");
     revalidatePath("/admin/orders");
 
@@ -99,7 +99,7 @@ export async function placeOrderAction(
     };
   }
 
-  // Redirect to a success page. For now, we'll go to the user's profile.
+  // Redirect to a success page.
   // The cart clearing will be handled on the client side after the redirect.
   redirect("/account/profile?order_success=true");
 }

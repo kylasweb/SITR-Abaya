@@ -46,7 +46,7 @@ export type ShippingAddress = {
 };
 
 export type Order = {
-  id: string;
+  id: string; // This is the Firestore document ID
   userId: string;
   items: CartItem[];
   shippingAddress: ShippingAddress;
@@ -55,8 +55,8 @@ export type Order = {
   total: number;
   currency: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
 };
 
 export type NewOrder = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
