@@ -67,13 +67,10 @@ export default function AiContentStudio() {
       if (typeof puter === 'undefined') {
         throw new Error('Puter.js is not available.');
       }
-      
-      // Check if user is authenticated with Puter
-      if (!(await puter.auth.isLoggedIn())) {
-        // If not, prompt them to log in
-        await puter.auth.prompt();
-      }
 
+      // The puter.ai.chat() function will handle authentication as needed.
+      // In a local dev environment, this will often work without an explicit user login.
+      // In a deployed app, it will prompt the user to log in if they haven't already.
       const result = await puter.ai.chat(prompt);
 
       if (result) {
