@@ -34,9 +34,15 @@ export default function RootLayout({
       <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'font-sans': isAdminRoute })}>
         <AuthProvider>
           <StoreProvider>
-            {!isAdminRoute && <Header />}
-            <main className="flex-grow">{children}</main>
-            {!isAdminRoute && <Footer />}
+            {isAdminRoute ? (
+                <main className="flex-grow">{children}</main>
+            ) : (
+              <>
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </>
+            )}
             <Toaster />
           </StoreProvider>
         </AuthProvider>
