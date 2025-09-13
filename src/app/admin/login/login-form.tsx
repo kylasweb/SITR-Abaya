@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { KeyRound, Loader2 } from "lucide-react";
 import { loginAction, type FormState } from "./actions";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import React from 'react';
 
 const initialState: FormState = {
   message: "",
@@ -32,7 +33,7 @@ function SubmitButton() {
 }
 
 export default function AdminLoginForm() {
-  const [state, formAction] = useFormState(loginAction, initialState);
+  const [state, formAction] = React.useActionState(loginAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {

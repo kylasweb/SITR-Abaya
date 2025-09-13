@@ -1,8 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect, useRef } from 'react';
+import { useFormStatus } from 'react-dom';
+import React, { useEffect, useRef } from 'react';
 import { Loader2 } from 'lucide-react';
 import { loginWithEmailAndPasswordAction, type FormState } from '@/app/auth/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -36,7 +36,7 @@ function SubmitButton() {
 
 
 export default function LoginForm() {
-  const [state, formAction] = useFormState(loginWithEmailAndPasswordAction, initialState);
+  const [state, formAction] = React.useActionState(loginWithEmailAndPasswordAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 

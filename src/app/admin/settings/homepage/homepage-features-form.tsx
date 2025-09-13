@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updateHomepageFeaturesAction } from "./actions";
-import { useFormState, useFormStatus } from "react-dom";
-import { useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
+import React, { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, PlusCircle, Trash2 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
@@ -59,7 +59,7 @@ interface HomepageFeaturesFormProps {
 
 export function HomepageFeaturesForm({ initialItems }: HomepageFeaturesFormProps) {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(updateHomepageFeaturesAction, initialState);
+  const [state, formAction] = React.useActionState(updateHomepageFeaturesAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<FeatureFormValues>({

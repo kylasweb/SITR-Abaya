@@ -26,8 +26,8 @@ import {
 import { Loader2, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { addProductAction } from "./actions";
-import { useFormState, useFormStatus } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
+import React, { useEffect, useRef, useState } from "react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -74,7 +74,7 @@ function SubmitButton() {
 
 export function AddProductForm() {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(addProductAction, initialState);
+  const [state, formAction] = React.useActionState(addProductAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 

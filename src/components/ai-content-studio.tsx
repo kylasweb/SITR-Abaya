@@ -236,7 +236,7 @@ Blog Post Ideas:`;
              <CardHeader className="px-0 sm:px-6">
                 <CardTitle className="font-headline">Social Media Post</CardTitle>
                 <CardDescription>Draft posts for your social channels.</CardDescription>
-            </Header>
+            </CardHeader>
             <form onSubmit={createSocialMediaPost} className="space-y-6 px-0 sm:px-6">
                 <div className="grid gap-2">
                     <Label htmlFor="topic-sm">Topic / Product Name</Label>

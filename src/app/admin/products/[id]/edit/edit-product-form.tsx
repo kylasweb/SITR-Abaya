@@ -26,8 +26,8 @@ import {
 import { Loader2, Trash2, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { updateProductAction } from "./actions";
-import { useFormState, useFormStatus } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
+import React, { useEffect, useRef, useState } from "react";
 import type { EditableProduct } from "@/lib/types";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -79,7 +79,7 @@ interface EditProductFormProps {
 export function EditProductForm({ product }: EditProductFormProps) {
   const { toast } = useToast();
   const updateProductActionWithId = updateProductAction.bind(null, product.id);
-  const [state, formAction] = useFormState(updateProductActionWithId, initialState);
+  const [state, formAction] = React.useActionState(updateProductActionWithId, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   
   const [existingImages, setExistingImages] = useState<string[]>(product.imageUrls);

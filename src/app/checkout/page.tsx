@@ -17,13 +17,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { placeOrderAction } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -70,7 +70,7 @@ export default function CheckoutPage() {
     const router = useRouter();
     const { toast } = useToast();
 
-    const [state, formAction] = useFormState(placeOrderAction, initialState);
+    const [state, formAction] = React.useActionState(placeOrderAction, initialState);
 
     const form = useForm<ShippingAddressFormValues>({
         resolver: zodResolver(shippingAddressSchema),
