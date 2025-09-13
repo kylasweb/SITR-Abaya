@@ -84,6 +84,22 @@ export type UserData = {
     createdAt: Date;
 }
 
+// --- Expense Tracking Types ---
+
+export type Expense = {
+  id: string; // Firestore document ID
+  date: Date;
+  category: string;
+  amount: number;
+  description: string;
+  createdAt: Date;
+};
+
+export type NewExpense = Omit<Expense, 'id' | 'createdAt' | 'date'> & {
+    date: string; // Date comes from form as a string
+};
+
+
 // --- Site Settings Types ---
 
 export type GeneralSettings = {

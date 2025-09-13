@@ -21,6 +21,7 @@ import {
   LogOut,
   Settings,
   LayoutGrid,
+  Landmark,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
@@ -94,6 +95,14 @@ export default function AdminLayoutClient({
                 <Link href="/admin/customers">
                   <Users />
                   <span>Customers</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/accounting')} tooltip="Accounting">
+                <Link href="/admin/accounting">
+                  <Landmark />
+                  <span>Accounting</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

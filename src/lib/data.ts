@@ -1,4 +1,4 @@
-import { Product, Order, EditableProduct, UserData, SiteSettings } from './types';
+import { Product, Order, EditableProduct, UserData, SiteSettings, Expense } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import { db } from './firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy } from 'firebase/firestore';
@@ -184,6 +184,34 @@ export async function getAllUsers(): Promise<UserData[]> {
         console.error("Error fetching all users from Firestore:", error);
         return [];
     }
+}
+
+// Fetches all expenses from Firestore.
+export async function getAllExpenses(): Promise<Expense[]> {
+  try {
+    const expensesCollection = collection(db, 'expenses');
+    const q = query(expensesCollection, orderBy('date', 'desc'));
+    const expenseSnapshot = await getDocs(q);
+
+    if (expenseSnapshot.empty) {
+      return [];
+    }
+
+    const expenseList = expenseSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        date: data.date.toDate(),
+        createdAt: data.createdAt.toDate(),
+      } as Expense;
+    });
+
+    return expenseList;
+  } catch (error) {
+    console.error("Error fetching expenses from Firestore:", error);
+    return [];
+  }
 }
 
 const defaultSettings: SiteSettings = {
