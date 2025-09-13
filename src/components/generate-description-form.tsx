@@ -1,24 +1,17 @@
 "use client";
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Bot, Loader2 } from 'lucide-react';
 
-import { generateDescriptionAction, type FormState } from '@/app/admin/generate-description/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 
-const initialState: FormState = {
-  message: '',
-  description: '',
-  timestamp: Date.now(),
-};
+declare const puter: any;
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" disabled={pending} className="w-full md:w-auto">
       {pending ? (
@@ -37,31 +30,71 @@ function SubmitButton() {
 }
 
 export default function GenerateDescriptionForm() {
-  const [state, formAction] = useFormState(generateDescriptionAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
-  const prevStateRef = useRef(state);
+  const [isLoading, setIsLoading] = useState(false);
+  const [description, setDescription] = useState('');
 
-  useEffect(() => {
-    if (state.message && state.message !== 'success' && state.timestamp !== prevStateRef.current.timestamp) {
+  const handleGeneration = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setDescription('');
+
+    const formData = new FormData(event.currentTarget);
+    const keywords = formData.get('keywords') as string;
+    const summary = formData.get('summary') as string;
+
+    if (!keywords) {
       toast({
         variant: "destructive",
         title: "Generation Failed",
-        description: state.message,
+        description: "Keywords are required to generate a description.",
       });
+      setIsLoading(false);
+      return;
     }
-    prevStateRef.current = state;
-  }, [state, toast]);
 
-  useEffect(() => {
-    if (state.message === 'success') {
-      formRef.current?.reset();
+    const prompt = `You are an expert copywriter specializing in creating luxurious product descriptions for abayas.
+
+Based on the provided keywords and summary, generate a compelling and detailed product description that highlights the abaya's unique features, design inspiration, and target audience. Focus on attracting customers with a sense of elegance and sophistication.
+
+Keywords: ${keywords}
+Summary: ${summary || 'Not provided.'}
+
+Product Description:`;
+
+    try {
+      if (typeof puter === 'undefined') {
+        throw new Error('Puter.js is not loaded.');
+      }
+      
+      const result = await puter.ai.chat(prompt);
+
+      if (result) {
+        setDescription(result);
+        formRef.current?.reset();
+      } else {
+         toast({
+          variant: "destructive",
+          title: "Generation Failed",
+          description: "The AI could not generate a description. Please try refining your keywords.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "An unexpected error occurred.",
+        description: "Please check the console for details and ensure Puter.js is loaded.",
+      });
+    } finally {
+      setIsLoading(false);
     }
-  }, [state.message]);
+  };
 
 
   return (
-    <form ref={formRef} action={formAction} className="space-y-6">
+    <form ref={formRef} onSubmit={handleGeneration} className="space-y-6">
       <div className="grid gap-2">
         <Label htmlFor="keywords">Keywords</Label>
         <Textarea
@@ -90,10 +123,10 @@ export default function GenerateDescriptionForm() {
       </div>
 
       <div className="flex justify-end">
-        <SubmitButton />
+        <SubmitButton pending={isLoading} />
       </div>
 
-      {state.description && (
+      {description && (
         <Card className="mt-6 bg-secondary/50">
           <CardHeader>
             <CardTitle className="font-headline flex items-center gap-2">
@@ -102,7 +135,7 @@ export default function GenerateDescriptionForm() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="leading-relaxed whitespace-pre-wrap">{state.description}</p>
+            <p className="leading-relaxed whitespace-pre-wrap">{description}</p>
           </CardContent>
         </Card>
       )}
