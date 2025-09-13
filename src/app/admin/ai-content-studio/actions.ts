@@ -9,6 +9,20 @@ type ActionResult = {
   content?: string;
 };
 
+// A helper function to process errors and provide more helpful messages.
+function handleAIError(error: unknown): { message: string } {
+    console.error('AI action failed:', error);
+    let errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    
+    // Check for specific "failed precondition" error from Google AI services.
+    if (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('failed precondition')) {
+        errorMessage = "AI suggestion failed. This is often because the 'Generative Language API' (generativelanguage.googleapis.com) is not enabled in your Google Cloud project. Please make sure billing is enabled for your project and that this API is active.";
+    }
+
+    return { message: errorMessage };
+}
+
+
 export async function generateContentAction(prompt: string): Promise<ActionResult> {
   if (!prompt) {
     return { success: false, message: 'Prompt is required.' };
@@ -20,9 +34,8 @@ export async function generateContentAction(prompt: string): Promise<ActionResul
     });
     return { success: true, message: 'Content generated successfully.', content: text };
   } catch (error) {
-    console.error('AI content generation failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-    return { success: false, message: errorMessage };
+    const { message } = handleAIError(error);
+    return { success: false, message };
   }
 }
 
@@ -37,8 +50,7 @@ export async function suggestContentAction(prompt: string): Promise<ActionResult
         });
         return { success: true, message: 'Suggestion generated successfully.', content: text };
     } catch (error) {
-        console.error('AI suggestion generation failed:', error);
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-        return { success: false, message: errorMessage };
+        const { message } = handleAIError(error);
+        return { success: false, message };
     }
 }
