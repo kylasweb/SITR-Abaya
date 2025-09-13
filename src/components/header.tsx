@@ -45,117 +45,112 @@ export default function Header() {
       )}>
         Free Worldwide Shipping on Orders Over $200
       </div>
-      <div className="container flex h-20 items-center">
-        {/* Mobile Menu Trigger */}
-        <div className="flex-none md:hidden">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-                <Button
-                variant="ghost"
-                className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-                aria-label="Toggle Menu"
-                >
-                <Menu className="h-6 w-6" />
-                </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="pr-0">
-                <Link
-                  href="/"
-                  className="mb-8 flex items-center"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Logo className="h-6 w-6 mr-2" />
-                  <span className="font-headline text-2xl">SITR</span>
-                </Link>
-                <div className="flex flex-col space-y-4">
-                {mainNav.map((item) => (
-                    <Link
-                    key={`${item.href}-${item.label}`}
-                    href={item.href}
+      <div className="container px-4">
+        {/* Top bar: Mobile Menu, Logo, Actions */}
+        <div className="flex h-20 items-center">
+          {/* Mobile Menu Trigger */}
+          <div className="flex-1 flex justify-start md:hidden">
+              <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                  <Button
+                  variant="ghost"
+                  className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  aria-label="Toggle Menu"
+                  >
+                  <Menu className="h-6 w-6" />
+                  </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="pr-0">
+                  <Link
+                    href="/"
+                    className="mb-8 flex items-center"
                     onClick={() => setIsOpen(false)}
-                    className="text-lg transition-colors hover:text-foreground/80 text-foreground/80"
-                    >
-                    {item.label}
-                    </Link>
-                ))}
-                </div>
-            </SheetContent>
-            </Sheet>
+                  >
+                    <Logo className="h-6 w-6 mr-2" />
+                    <span className="font-headline text-2xl">SITR</span>
+                  </Link>
+                  <div className="flex flex-col space-y-4">
+                  {mainNav.map((item) => (
+                      <Link
+                      key={`${item.href}-${item.label}`}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className="text-lg transition-colors hover:text-foreground/80 text-foreground/80"
+                      >
+                      {item.label}
+                      </Link>
+                  ))}
+                  </div>
+              </SheetContent>
+              </Sheet>
+          </div>
+
+          {/* Center Logo */}
+          <div className="flex-1 flex justify-center">
+              <Link href="/" className="flex items-center gap-2">
+                  <Logo className="h-7 w-7" />
+                  <span className="font-headline text-3xl font-bold tracking-tighter">SITR</span>
+              </Link>
+          </div>
+
+          {/* Right-side Actions */}
+          <div className="flex-1 flex justify-end items-center">
+              <div className="flex items-center ml-4">
+                  <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
+                      <Search className="h-5 w-5" />
+                  </Button>
+                  <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" aria-label="Select Currency">
+                              <Globe className="h-5 w-5" />
+                          </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                          {currencies.map(currency => (
+                          <DropdownMenuItem key={currency.code} onSelect={() => setCurrency(currency.code)}>
+                              {selectedCurrency.code === currency.code && <Check className="mr-2 h-4 w-4" />}
+                              {currency.code} - {currency.name}
+                          </DropdownMenuItem>
+                          ))}
+                      </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button asChild variant="ghost" size="icon" aria-label="User Account">
+                  <Link href="/account/profile">
+                      <User className="h-5 w-5" />
+                  </Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="icon" aria-label="Wishlist" className="relative">
+                  <Link href="/wishlist">
+                      <Heart className="h-5 w-5" />
+                      {wishlist.length > 0 && (
+                        <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs">{wishlist.length}</Badge>
+                      )}
+                  </Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="relative">
+                  <Link href="/cart">
+                      <ShoppingBag className="h-5 w-5" />
+                      {totalCartItems > 0 && (
+                        <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs">{totalCartItems}</Badge>
+                      )}
+                  </Link>
+                  </Button>
+              </div>
+          </div>
         </div>
 
-        {/* Left-side Navigation (Desktop) */}
-        <div className="flex-1 justify-start items-center hidden md:flex">
-             <nav className="flex items-center space-x-6 text-sm">
-                <Link
-                    href={mainNav[0].href}
-                    className="transition-colors hover:text-foreground/80 text-foreground"
-                >
-                    {mainNav[0].label}
-                </Link>
-             </nav>
-        </div>
-
-        {/* Center Logo */}
-        <div className="flex-none justify-center px-4">
-            <Link href="/" className="flex items-center gap-2">
-                <Logo className="h-7 w-7" />
-                <span className="font-headline text-3xl font-bold tracking-tighter">SITR</span>
+        {/* Bottom bar: Desktop Navigation */}
+        <nav className="hidden md:flex justify-center items-center space-x-12 text-base py-3 border-t">
+          {mainNav.map((item) => (
+             <Link
+                key={item.href}
+                href={item.href}
+                className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+                {item.label}
             </Link>
-        </div>
-
-        {/* Right-side Navigation & Actions (Desktop) */}
-        <div className="flex-1 flex justify-end items-center">
-             <nav className="hidden md:flex items-center space-x-6 text-sm">
-                <Link
-                    href={mainNav[1].href}
-                    className="transition-colors hover:text-foreground/80 text-foreground"
-                >
-                    {mainNav[1].label}
-                </Link>
-            </nav>
-             <div className="flex items-center ml-4">
-                <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
-                    <Search className="h-5 w-5" />
-                </Button>
-                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" aria-label="Select Currency">
-                            <Globe className="h-5 w-5" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        {currencies.map(currency => (
-                        <DropdownMenuItem key={currency.code} onSelect={() => setCurrency(currency.code)}>
-                             {selectedCurrency.code === currency.code && <Check className="mr-2 h-4 w-4" />}
-                            {currency.code} - {currency.name}
-                        </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <Button asChild variant="ghost" size="icon" aria-label="User Account">
-                <Link href="/account/profile">
-                    <User className="h-5 w-5" />
-                </Link>
-                </Button>
-                <Button asChild variant="ghost" size="icon" aria-label="Wishlist" className="relative">
-                <Link href="/wishlist">
-                    <Heart className="h-5 w-5" />
-                    {wishlist.length > 0 && (
-                      <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs">{wishlist.length}</Badge>
-                    )}
-                </Link>
-                </Button>
-                <Button asChild variant="ghost" size="icon" aria-label="Shopping Cart" className="relative">
-                <Link href="/cart">
-                    <ShoppingBag className="h-5 w-5" />
-                    {totalCartItems > 0 && (
-                       <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs">{totalCartItems}</Badge>
-                    )}
-                </Link>
-                </Button>
-            </div>
-        </div>
-
+          ))}
+        </nav>
       </div>
     </header>
   );
