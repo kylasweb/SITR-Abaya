@@ -5,7 +5,7 @@ import AdminLayoutClient from './admin-layout-client';
 const ADMIN_COOKIE_NAME = 'sitr-admin-auth';
 
 // This is a server component that handles authentication
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
