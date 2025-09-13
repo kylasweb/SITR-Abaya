@@ -28,6 +28,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { logoutAction } from './login/actions';
 import { usePathname } from 'next/navigation';
+import AdminDebugBar from '@/components/admin-debug-bar';
 
 export default function AdminLayoutClient({
   children,
@@ -140,6 +141,7 @@ export default function AdminLayoutClient({
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           {children}
         </main>
+        {process.env.NODE_ENV === 'development' && <AdminDebugBar />}
       </SidebarInset>
     </SidebarProvider>
   );
