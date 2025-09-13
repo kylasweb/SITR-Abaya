@@ -20,6 +20,7 @@ import {
   Bot,
   LogOut,
   Settings,
+  LayoutGrid,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
@@ -76,6 +77,14 @@ export default function AdminLayoutClient({
                 <Link href="/admin/products">
                   <Package />
                   <span>Products</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/collections')} tooltip="Collections">
+                <Link href="/admin/collections">
+                  <LayoutGrid />
+                  <span>Collections</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
