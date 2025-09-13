@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { MoreHorizontal, Trash2, FilePenLine } from 'lucide-react';
 import type { Product } from '@/lib/types';
 import {
   Table,
@@ -123,7 +124,12 @@ export default function ProductTable({ products }: ProductTableProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem disabled>Edit</DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href={`/admin/products/${product.id}/edit`}>
+                        <FilePenLine className="mr-2 h-4 w-4" />
+                        Edit
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="text-destructive focus:bg-destructive/10 focus:text-destructive"

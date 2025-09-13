@@ -25,6 +25,18 @@ export type Product = {
 
 export type NewProduct = Omit<Product, 'id' | 'slug'>;
 
+export type EditableProduct = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  tags: string[];
+  sizes: string[];
+  materials: string[];
+  imageIds: string;
+}
+
 export type CartItem = {
   productId: string;
   name: string;

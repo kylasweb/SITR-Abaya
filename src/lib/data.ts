@@ -1,7 +1,7 @@
-import { Product, Order } from './types';
+import { Product, Order, EditableProduct } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import { db } from './firebase';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, orderBy } from 'firebase/firestore';
 
 const getImage = (id: string) => {
   const img = PlaceHolderImages.find((i) => i.id === id);
@@ -163,6 +163,40 @@ export async function getProducts(): Promise<Product[]> {
     return localProducts;
   }
 }
+
+// Fetches a single product by its ID from Firestore.
+export async function getProductById(productId: string): Promise<EditableProduct | null> {
+  if (!productId) return null;
+  try {
+    const productDocRef = doc(db, 'products', productId);
+    const docSnap = await getDoc(productDocRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      // The data from firestore needs to be transformed for the edit form.
+      // E.g., the images array needs to be a comma-separated string of IDs.
+      const imageIds = data.images.map((img: { id: string }) => img.id).join(', ');
+      return {
+        id: docSnap.id,
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        category: data.category,
+        tags: data.tags,
+        sizes: data.variants.size,
+        materials: data.variants.material,
+        imageIds: imageIds,
+      };
+    } else {
+      console.warn(`Product with ID ${productId} not found.`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching product ${productId}:`, error);
+    return null;
+  }
+}
+
 
 // Fetches all orders for a given user ID from Firestore.
 export async function getOrdersByUserId(userId: string): Promise<Order[]> {
