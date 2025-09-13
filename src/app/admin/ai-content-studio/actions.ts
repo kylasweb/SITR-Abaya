@@ -2,7 +2,6 @@
 'use server';
 
 import { ai } from '@/ai/genkit';
-import { generate } from 'genkit';
 
 type ActionResult = {
   success: boolean;
@@ -15,7 +14,7 @@ export async function generateContentAction(prompt: string): Promise<ActionResul
     return { success: false, message: 'Prompt is required.' };
   }
   try {
-    const { text } = await generate({
+    const { text } = await ai.generate({
       model: ai.model,
       prompt: prompt,
     });
@@ -32,7 +31,7 @@ export async function suggestContentAction(prompt: string): Promise<ActionResult
         return { success: false, message: 'Prompt for suggestion is required.' };
     }
     try {
-        const { text } = await generate({
+        const { text } = await ai.generate({
             model: ai.model,
             prompt: prompt,
         });
