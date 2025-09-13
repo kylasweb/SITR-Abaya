@@ -11,8 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { generateContentAction, suggestContentAction } from '@/app/admin/ai-content-studio/actions';
 
-declare const puter: any;
 
 interface SubmitButtonProps {
   pending: boolean;
@@ -82,14 +82,11 @@ export default function AiContentStudio() {
   const getSuggestion = async (prompt: string, field: keyof typeof formValues) => {
     setIsSuggesting(prev => ({ ...prev, [field]: true }));
     try {
-        if (typeof puter === 'undefined') {
-            throw new Error('Puter.js is not available.');
-        }
-        const result = await puter.ai.getCompletion(prompt);
-        if (result) {
-            handleInputChange(field, result);
+        const result = await suggestContentAction(prompt);
+        if (result.success && result.content) {
+            handleInputChange(field, result.content);
         } else {
-            toast({ variant: "destructive", title: "Suggestion Failed", description: "The AI could not generate a suggestion." });
+            toast({ variant: "destructive", title: "Suggestion Failed", description: result.message });
         }
     } catch (error) {
         console.error(error);
@@ -100,25 +97,19 @@ export default function AiContentStudio() {
     }
   };
 
-  const handleGeneration = async (event: FormEvent<HTMLFormElement>, generatorType: string, prompt: string) => {
-    event.preventDefault();
+  const handleGeneration = async (generatorType: string, prompt: string) => {
     setIsLoading(true);
     setGeneratedContent(prev => ({ ...prev, [generatorType]: '' }));
 
     try {
-      if (typeof puter === 'undefined') {
-        throw new Error('Puter.js is not available.');
-      }
-      // Use getCompletion for unauthenticated text generation
-      const result = await puter.ai.getCompletion(prompt);
-
-      if (result) {
-        setGeneratedContent(prev => ({ ...prev, [generatorType]: result }));
+      const result = await generateContentAction(prompt);
+      if (result.success && result.content) {
+        setGeneratedContent(prev => ({ ...prev, [generatorType]: result.content! }));
       } else {
          toast({
           variant: "destructive",
           title: "Generation Failed",
-          description: "The AI could not generate a response. Please try refining your inputs.",
+          description: result.message,
         });
       }
     } catch (error) {
@@ -135,6 +126,7 @@ export default function AiContentStudio() {
   };
   
   const createProductDescription = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
       const { pd_keywords, pd_summary, pd_productType } = formValues;
 
        if (!pd_keywords) {
@@ -164,10 +156,11 @@ Keywords: ${pd_keywords}
 Summary: ${pd_summary || 'Not provided.'}
 
 Product Description:`;
-      handleGeneration(e, 'productDescription', prompt);
+      handleGeneration('productDescription', prompt);
   };
   
   const createSocialMediaPost = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
       const { sm_topic, sm_platform, sm_tone } = formValues;
        if (!sm_topic) {
           toast({ variant: "destructive", title: "Topic/Product is required." });
@@ -182,10 +175,11 @@ The tone should be: ${sm_tone}.
 Include relevant hashtags.
 
 Generated Post:`;
-      handleGeneration(e, 'socialMediaPost', prompt);
+      handleGeneration('socialMediaPost', prompt);
   };
   
   const createSEODescription = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
       const { seo_productName, seo_keywords } = formValues;
        if (!seo_productName || !seo_keywords) {
           toast({ variant: "destructive", title: "Product Name and Keywords are required." });
@@ -199,10 +193,11 @@ Product Name: ${seo_productName}
 Keywords: ${seo_keywords}
 
 Meta Description:`;
-      handleGeneration(e, 'seoDescription', prompt);
+      handleGeneration('seoDescription', prompt);
   };
 
   const createBlogPostIdeas = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
       const { blog_topic } = formValues;
        if (!blog_topic) {
           toast({ variant: "destructive", title: "Topic is required." });
@@ -216,7 +211,7 @@ The ideas should be engaging, relevant to an audience interested in modest fashi
 Format the output as a numbered list.
 
 Blog Post Ideas:`;
-      handleGeneration(e, 'blogPostIdeas', prompt);
+      handleGeneration('blogPostIdeas', prompt);
   };
 
 
