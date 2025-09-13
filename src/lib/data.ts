@@ -68,7 +68,7 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-// Fetches a single product by its ID from Firestore.
+// Fetches a single product by its ID from Firestore for the edit form.
 export async function getProductById(productId: string): Promise<EditableProduct | null> {
   if (!productId) return null;
   try {
@@ -77,16 +77,18 @@ export async function getProductById(productId: string): Promise<EditableProduct
 
     if (docSnap.exists()) {
       const data = docSnap.data();
-      const imageUrls = data.images.map((img: { url: string }) => img.url);
+      // Ensure that `data.images` is an array and map over it.
+      const imageUrls = Array.isArray(data.images) ? data.images.map((img: { url: string }) => img.url) : [];
+      
       return {
         id: docSnap.id,
         name: data.name,
         description: data.description,
         price: data.price,
         category: data.category,
-        tags: data.tags,
-        sizes: data.variants.size,
-        materials: data.variants.material,
+        tags: data.tags || [],
+        sizes: data.variants?.size || [],
+        materials: data.variants?.material || [],
         imageUrls: imageUrls,
       };
     } else {

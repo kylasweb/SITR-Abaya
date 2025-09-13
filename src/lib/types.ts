@@ -38,7 +38,7 @@ export type EditableProduct = {
   sizes: string[];
   materials: string[];
   imageUrls: string[]; // We'll manage existing images by URL
-}
+};
 
 export type CartItem = {
   productId: string;
