@@ -19,6 +19,7 @@ import {
   Users,
   Bot,
   LogOut,
+  Settings,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
@@ -91,6 +92,14 @@ export default function AdminLayoutClient({
                 <Link href="/admin/ai-content-studio">
                   <Bot />
                   <span>AI Content Studio</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/settings')} tooltip="Settings">
+                <Link href="/admin/settings">
+                  <Settings />
+                  <span>Settings</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
