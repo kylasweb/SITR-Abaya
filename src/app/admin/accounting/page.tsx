@@ -7,28 +7,9 @@ import { getAllExpenses } from "@/lib/data";
 import { ExpenseForm } from "./expense-form";
 import ExpenseTable from "./expense-table";
 import type { Expense } from "@/lib/types";
-import { useRouter } from 'next/navigation';
 import { useAsync } from '@/hooks/use-async';
 
-// This is a new component that wraps the form and manages its selection state.
-function ExpenseFormWrapper({ onSaveSuccess }: { onSaveSuccess: () => void }) {
-    const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
-
-    const handleEdit = (expense: Expense) => {
-        setSelectedExpense(expense);
-    };
-
-    const handleSuccess = () => {
-        setSelectedExpense(null); // Clear selection after successful save/update
-        onSaveSuccess();
-    };
-
-    return <ExpenseForm expense={selectedExpense} onSuccess={handleSuccess} setSelectedExpense={setSelectedExpense} />;
-}
-
-
 export default function AccountingPage() {
-    const router = useRouter();
     const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
     // Use a hook to fetch data so it can be re-fetched easily
@@ -90,7 +71,7 @@ export default function AccountingPage() {
                              </p>
                         </CardContent>
                     </Card>
-                    <ExpenseForm expense={selectedExpense} onSuccess={handleSuccess} setSelectedExpense={setSelectedExpense} />
+                    <ExpenseForm expense={selectedExpense} onSuccess={handleSuccess} />
                 </div>
             </div>
         </div>

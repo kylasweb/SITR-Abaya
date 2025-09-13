@@ -99,7 +99,7 @@ export function ExpenseForm({ expense = null, onSuccess }: ExpenseFormProps) {
       amount: expense?.amount || 0,
       description: expense?.description || "",
     });
-  }, [expense]);
+  }, [expense, form]);
 
   return (
      <Card>
@@ -224,8 +224,8 @@ export function ExpenseForm({ expense = null, onSuccess }: ExpenseFormProps) {
             <div className="flex justify-end gap-2">
                 {expense && (
                     <Button type="button" variant="ghost" onClick={() => {
-                        setSelectedExpense(null);
                         form.reset({ date: new Date(), category: "", amount: 0, description: "", id: undefined });
+                        onSuccess(); // To clear the selection in the parent
                     }}>
                         Cancel Edit
                     </Button>
