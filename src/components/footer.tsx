@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import Image from 'next/image';
+import { Logo } from './icons';
 
 export default function Footer() {
   return (
@@ -22,17 +23,18 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold font-headline">Shop</h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="/products" className="text-muted-foreground hover:text-foreground">All Products</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">New Arrivals</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">Best Sellers</Link></li>
+              <li><Link href="/products" className="text-muted-foreground hover:text-foreground">All Abayas</Link></li>
+              <li><Link href="/collections/coming-soon" className="text-muted-foreground hover:text-foreground">Hijabs</Link></li>
+              <li><Link href="/collections/coming-soon" className="text-muted-foreground hover:text-foreground">New Arrivals</Link></li>
+              <li><Link href="/products" className="text-muted-foreground hover:text-foreground">Best Sellers</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold font-headline">Company</h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">About Us</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
+              <li><Link href="/about" className="text-muted-foreground hover:text-foreground">About Us</Link></li>
+              <li><Link href="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
               <li><Link href="/admin/login" className="text-muted-foreground hover:text-foreground">Admin Login</Link></li>
             </ul>
           </div>
@@ -40,16 +42,18 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold font-headline">Support</h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">Shipping & Returns</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
+              <li><Link href="/support/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
+              <li><Link href="/support/shipping-returns" className="text-muted-foreground hover:text-foreground">Shipping & Returns</Link></li>
+              <li><Link href="/support/privacy-policy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 border-t pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Image src="https://placehold.co/120x40/000000/F6E9C7?text=SITR" alt="SITR Logo" width={100} height={35} />
+            <div className="bg-primary text-primary-foreground h-8 w-8 flex items-center justify-center rounded-md">
+                <Logo className="h-5 w-5" />
+            </div>
             <p>&copy; {new Date().getFullYear()} SITR. All Rights Reserved.</p>
           </div>
           <div className="mt-4 sm:mt-0">

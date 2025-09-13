@@ -1,8 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { Heart, Menu, Search, ShoppingBag, User, Globe } from 'lucide-react';
+import { Heart, Menu, Search, ShoppingBag, User, Globe, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -16,13 +15,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Logo } from './icons';
 
 const mainNav = [
-  { href: '/products', label: 'Abaya' },
-  { href: '#', label: 'Hijabs' },
-  { href: '#', label: 'Collections' },
-  { href: '#', label: 'About Us' },
-  { href: '#', label: 'Returns' },
+  { href: '/products', label: 'Abayas' },
+  { href: '/collections/coming-soon', label: 'Hijabs' },
+  { href: '/collections/coming-soon', label: 'New Releases' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {
@@ -46,7 +46,7 @@ export default function Header() {
         "bg-primary text-primary-foreground text-center text-sm py-1.5 px-4 transition-all duration-300",
         isScrolled ? "h-0 py-0 overflow-hidden" : "h-auto"
       )}>
-        Ramadan Kareem.
+        Free Worldwide Shipping on Orders Over $200
       </div>
       <div className="container flex h-20 items-center">
         <div className="flex-1 md:hidden">
@@ -66,8 +66,8 @@ export default function Header() {
                   className="mb-8 flex items-center"
                   onClick={() => setIsOpen(false)}
                 >
-                  <Image src="https://placehold.co/150x50/000000/F6E9C7?text=SITR" alt="SITR Logo" width={120} height={40} />
-                  <span className="sr-only">SITR</span>
+                  <Logo className="h-6 w-6 mr-2" />
+                  <span className="font-headline text-2xl">SITR</span>
                 </Link>
                 <div className="flex flex-col space-y-4">
                 {mainNav.map((item) => (
@@ -86,36 +86,43 @@ export default function Header() {
         </div>
 
         <div className="flex-1 justify-start items-center hidden md:flex">
-            <Button variant="ghost" size="icon" aria-label="Search">
-                <Search className="h-5 w-5" />
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Select Currency">
-                  <Globe className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {currencies.map(currency => (
-                   <DropdownMenuItem key={currency.code} onSelect={() => setCurrency(currency.code)}>
-                    {currency.code} - {currency.name}
-                   </DropdownMenuItem>
+             <nav className="flex items-center space-x-6 text-sm">
+                {mainNav.slice(0, 2).map((item) => (
+                <Link
+                    key={`${item.href}-${item.label}`}
+                    href={item.href}
+                    className="transition-colors hover:text-foreground/80 text-foreground"
+                >
+                    {item.label}
+                </Link>
                 ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+             </nav>
         </div>
 
         <div className="flex-2 flex justify-center">
-            <Link href="/" className="flex items-center">
-                <Image src="https://placehold.co/150x50/000000/F6E9C7?text=SITR" alt="SITR Logo" width={150} height={50} />
-                <span className="sr-only">SITR</span>
+            <Link href="/" className="flex items-center gap-2">
+                <Logo className="h-7 w-7" />
+                <span className="font-headline text-3xl font-bold tracking-tighter">SITR</span>
             </Link>
         </div>
 
         <div className="flex-1 flex justify-end items-center">
-             <nav className="flex items-center">
-                <div className="md:hidden">
-                    <DropdownMenu>
+             <nav className="hidden md:flex items-center space-x-6 text-sm">
+                {mainNav.slice(2).map((item) => (
+                <Link
+                    key={`${item.href}-${item.label}`}
+                    href={item.href}
+                    className="transition-colors hover:text-foreground/80 text-foreground"
+                >
+                    {item.label}
+                </Link>
+                ))}
+            </nav>
+             <div className="flex items-center ml-4">
+                <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
+                    <Search className="h-5 w-5" />
+                </Button>
+                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" aria-label="Select Currency">
                         <Globe className="h-5 w-5" />
@@ -128,11 +135,7 @@ export default function Header() {
                         </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-                <Button variant="ghost" size="icon" aria-label="Search" className="md:hidden">
-                    <Search className="h-5 w-5" />
-                </Button>
+                </DropdownMenu>
                 <Button asChild variant="ghost" size="icon" aria-label="User Account">
                 <Link href="/account/profile">
                     <User className="h-5 w-5" />
@@ -154,23 +157,10 @@ export default function Header() {
                     )}
                 </Link>
                 </Button>
-            </nav>
+            </div>
         </div>
 
       </div>
-       <div className="hidden md:flex justify-center border-t">
-          <nav className="flex items-center space-x-12 text-base py-3">
-            {mainNav.map((item) => (
-              <Link
-                key={`${item.href}-${item.label}`}
-                href={item.href}
-                className="transition-colors hover:text-foreground/80 text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
     </header>
   );
 }

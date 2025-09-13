@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { Bot, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -96,14 +96,30 @@ export default function AiContentStudio() {
       const formData = new FormData(e.currentTarget);
       const keywords = formData.get('keywords') as string;
       const summary = formData.get('summary') as string;
+      const productType = formData.get('productType') as string;
+
        if (!keywords) {
           toast({ variant: "destructive", title: "Keywords are required." });
-          setIsLoading(false);
           return;
         }
-      const prompt = `You are an expert copywriter for a luxury abaya brand called SITR. Your tone is elegant, sophisticated, and evocative.
+      
+      let templatePrompt = '';
+      switch (productType) {
+        case 'Abaya':
+          templatePrompt = `Focus on elegance, flow, modesty, and the quality of the fabric. Use evocative language that speaks to a sense of luxury and grace.`;
+          break;
+        case 'Hijab':
+          templatePrompt = `Focus on the material's softness, drape, and opacity. Mention its versatility for different styles and occasions.`;
+          break;
+        default:
+           templatePrompt = `Describe the item's key features, materials, and ideal use case.`;
+      }
 
-Generate a compelling product description based on the following details. It should be 2-3 paragraphs long.
+      const prompt = `You are an expert copywriter for a luxury modest fashion brand called SITR. Your tone is elegant, sophisticated, and evocative.
+
+Generate a compelling product description for a ${productType.toLowerCase()} based on the following details. It should be 2-3 paragraphs long.
+
+${templatePrompt}
 
 Keywords: ${keywords}
 Summary: ${summary || 'Not provided.'}
@@ -119,7 +135,6 @@ Product Description:`;
       const tone = formData.get('tone') as string;
        if (!topic) {
           toast({ variant: "destructive", title: "Topic/Product is required." });
-          setIsLoading(false);
           return;
         }
       const prompt = `You are a social media manager for a luxury abaya brand, SITR.
@@ -140,7 +155,6 @@ Generated Post:`;
       const keywords = formData.get('keywords') as string;
        if (!productName || !keywords) {
           toast({ variant: "destructive", title: "Product Name and Keywords are required." });
-          setIsLoading(false);
           return;
         }
       const prompt = `You are an SEO expert for an e-commerce store.
@@ -159,7 +173,6 @@ Meta Description:`;
       const topic = formData.get('topic') as string;
        if (!topic) {
           toast({ variant: "destructive", title: "Topic is required." });
-          setIsLoading(false);
           return;
         }
       const prompt = `You are a content strategist for a luxury fashion brand.
@@ -187,9 +200,22 @@ Blog Post Ideas:`;
         <TabsContent value="product-description">
             <CardHeader className="px-0 sm:px-6">
                 <CardTitle className="font-headline">Product Description</CardTitle>
-                <CardDescription>Create compelling descriptions for your abayas.</CardDescription>
+                <CardDescription>Create compelling descriptions for your products.</CardDescription>
             </CardHeader>
             <form onSubmit={createProductDescription} className="space-y-6 px-0 sm:px-6">
+                <div className="grid gap-2">
+                    <Label htmlFor="productType-pd">Product Type</Label>
+                    <Select name="productType" defaultValue="Abaya">
+                         <SelectTrigger id="productType-pd">
+                            <SelectValue placeholder="Select a template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Abaya">Abaya</SelectItem>
+                            <SelectItem value="Hijab">Hijab</SelectItem>
+                            <SelectItem value="General Clothing">General Clothing</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
                 <div className="grid gap-2">
                     <Label htmlFor="keywords-pd">Keywords</Label>
                     <Textarea id="keywords-pd" name="keywords" placeholder="e.g., black silk, evening wear, silver embroidery" required rows={2} />
@@ -210,7 +236,7 @@ Blog Post Ideas:`;
              <CardHeader className="px-0 sm:px-6">
                 <CardTitle className="font-headline">Social Media Post</CardTitle>
                 <CardDescription>Draft posts for your social channels.</CardDescription>
-            </CardHeader>
+            </Header>
             <form onSubmit={createSocialMediaPost} className="space-y-6 px-0 sm:px-6">
                 <div className="grid gap-2">
                     <Label htmlFor="topic-sm">Topic / Product Name</Label>

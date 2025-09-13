@@ -87,7 +87,7 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === '/admin/ai-content-studio'} tooltip="AI Content Studio">
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/ai-content-studio')} tooltip="AI Content Studio">
                 <Link href="/admin/ai-content-studio">
                   <Bot />
                   <span>AI Content Studio</span>
