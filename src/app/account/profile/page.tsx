@@ -8,11 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getOrdersByUserId } from '@/lib/data';
+import type { Order } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
   // Redirect to login if not authenticated and not loading
   useEffect(() => {
@@ -20,6 +26,18 @@ export default function ProfilePage() {
       router.push('/login');
     }
   }, [loading, user, router]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchOrders = async () => {
+        setOrdersLoading(true);
+        const userOrders = await getOrdersByUserId(user.uid);
+        setOrders(userOrders);
+        setOrdersLoading(false);
+      };
+      fetchOrders();
+    }
+  }, [user]);
 
 
   if (loading || !user) {
@@ -71,6 +89,14 @@ export default function ProfilePage() {
     return initials.slice(0, 2).toUpperCase();
   };
 
+  const formatPrice = (price: number, currencyCode: string) => {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: currencyCode,
+    }).format(price);
+  };
+
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -104,13 +130,50 @@ export default function ProfilePage() {
               <CardDescription>A list of your past and current orders.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="text-center py-10 border-2 border-dashed rounded-lg">
-                  <h3 className="text-lg font-semibold">No Orders Yet</h3>
-                  <p className="mt-1 text-muted-foreground">You haven't placed any orders with us yet.</p>
-                  <Button asChild className="mt-4" variant="secondary">
-                    <Link href="/products">Start Shopping</Link>
-                  </Button>
-                </div>
+                {ordersLoading ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="flex justify-between items-center p-4 border rounded-lg">
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-4 w-48" />
+                        </div>
+                        <Skeleton className="h-8 w-20" />
+                      </div>
+                    ))}
+                  </div>
+                ) : orders.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Order ID</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Total</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {orders.map((order) => (
+                        <TableRow key={order.id}>
+                          <TableCell className="font-medium text-xs text-muted-foreground">{order.id.slice(0, 7)}...</TableCell>
+                          <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            <Badge variant={order.status === 'pending' ? 'secondary' : 'default'} className="capitalize">{order.status}</Badge>
+                          </TableCell>
+                          <TableCell className="text-right">{formatPrice(order.total, order.currency)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-10 border-2 border-dashed rounded-lg">
+                    <h3 className="text-lg font-semibold">No Orders Yet</h3>
+                    <p className="mt-1 text-muted-foreground">You haven't placed any orders with us yet.</p>
+                    <Button asChild className="mt-4" variant="secondary">
+                      <Link href="/products">Start Shopping</Link>
+                    </Button>
+                  </div>
+                )}
             </CardContent>
           </Card>
         </div>
