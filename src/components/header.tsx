@@ -47,14 +47,14 @@ export default function Header() {
       </div>
       <div className="container px-4">
         {/* Top bar: Mobile Menu, Logo, Actions */}
-        <div className="flex h-20 items-center">
-          {/* Mobile Menu Trigger */}
-          <div className="flex-1 flex justify-start md:hidden">
+        <div className="grid grid-cols-3 items-center h-20">
+          {/* Left-side: Mobile Menu */}
+          <div className="flex justify-start">
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                   <Button
                   variant="ghost"
-                  className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
                   aria-label="Toggle Menu"
                   >
                   <Menu className="h-6 w-6" />
@@ -86,7 +86,7 @@ export default function Header() {
           </div>
 
           {/* Center Logo */}
-          <div className="flex-1 flex justify-center">
+          <div className="flex justify-center">
               <Link href="/" className="flex items-center gap-2">
                   <Logo className="h-7 w-7" />
                   <span className="font-headline text-3xl font-bold tracking-tighter">SITR</span>
@@ -94,7 +94,7 @@ export default function Header() {
           </div>
 
           {/* Right-side Actions */}
-          <div className="flex-1 flex justify-end items-center">
+          <div className="flex justify-end items-center">
               <div className="flex items-center ml-4">
                   <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
                       <Search className="h-5 w-5" />
