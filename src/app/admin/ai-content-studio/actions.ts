@@ -43,5 +43,3 @@ export async function suggestContentAction(prompt: string): Promise<ActionResult
         return { success: false, message: errorMessage };
     }
 }
-
-    
