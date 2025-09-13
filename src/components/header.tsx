@@ -20,9 +20,6 @@ import { Logo } from './icons';
 const mainNav = [
   { href: '/products', label: 'Abayas' },
   { href: '/collections/coming-soon', label: 'Hijabs' },
-  { href: '/collections/coming-soon', label: 'New Releases' },
-  { href: '/about', label: 'About Us' },
-  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {
@@ -89,15 +86,12 @@ export default function Header() {
         {/* Left-side Navigation (Desktop) */}
         <div className="flex-1 justify-start items-center hidden md:flex">
              <nav className="flex items-center space-x-6 text-sm">
-                {mainNav.slice(0, 2).map((item) => (
                 <Link
-                    key={`${item.href}-${item.label}`}
-                    href={item.href}
+                    href={mainNav[0].href}
                     className="transition-colors hover:text-foreground/80 text-foreground"
                 >
-                    {item.label}
+                    {mainNav[0].label}
                 </Link>
-                ))}
              </nav>
         </div>
 
@@ -112,15 +106,12 @@ export default function Header() {
         {/* Right-side Navigation & Actions (Desktop) */}
         <div className="flex-1 flex justify-end items-center">
              <nav className="hidden md:flex items-center space-x-6 text-sm">
-                {mainNav.slice(2).map((item) => (
                 <Link
-                    key={`${item.href}-${item.label}`}
-                    href={item.href}
+                    href={mainNav[1].href}
                     className="transition-colors hover:text-foreground/80 text-foreground"
                 >
-                    {item.label}
+                    {mainNav[1].label}
                 </Link>
-                ))}
             </nav>
              <div className="flex items-center ml-4">
                 <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
