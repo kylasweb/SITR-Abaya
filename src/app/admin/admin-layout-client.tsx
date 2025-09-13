@@ -41,19 +41,21 @@ export default function AdminLayoutClient({
   
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
-          <div className="flex items-center gap-2">
-            <Logo className="h-8 w-auto" />
-            <span className="font-headline text-2xl group-data-[collapsible=icon]:hidden">
+          <div className="flex items-center gap-2.5">
+            <div className="bg-primary text-primary-foreground h-8 w-8 flex items-center justify-center rounded-md">
+              <Logo className="h-5 w-5" />
+            </div>
+            <span className="font-headline text-xl group-data-[collapsible=icon]:hidden">
               SITR Admin
             </span>
           </div>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === '/admin'}>
+              <SidebarMenuButton asChild isActive={pathname === '/admin'} tooltip="Dashboard">
                 <Link href="/admin">
                   <Home />
                   <span>Dashboard</span>
@@ -61,7 +63,7 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/orders')}>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/orders')} tooltip="Orders">
                 <Link href="/admin/orders">
                   <ShoppingCart />
                   <span>Orders</span>
@@ -69,7 +71,7 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/products')}>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/products')} tooltip="Products">
                 <Link href="/admin/products">
                   <Package />
                   <span>Products</span>
@@ -77,7 +79,7 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/customers')}>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/customers')} tooltip="Customers">
                 <Link href="/admin/customers">
                   <Users />
                   <span>Customers</span>
@@ -85,7 +87,7 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === '/admin/generate-description'}>
+              <SidebarMenuButton asChild isActive={pathname === '/admin/generate-description'} tooltip="Generate Content">
                 <Link href="/admin/generate-description">
                   <Bot />
                   <span>Generate Content</span>
@@ -96,17 +98,19 @@ export default function AdminLayoutClient({
         </SidebarContent>
         <SidebarFooter>
           <form action={logoutAction} className="w-full">
-            <Button variant="ghost" className="w-full justify-start">
-              <LogOut />
-              <span>Log Out</span>
-            </Button>
+             <SidebarMenuButton asChild variant="ghost" tooltip="Log Out">
+                <button type="submit" className="w-full">
+                  <LogOut />
+                  <span>Log Out</span>
+                </button>
+            </SidebarMenuButton>
           </form>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>
-        <header className="flex h-12 items-center justify-between border-b px-4 md:justify-end">
+      <SidebarInset className="bg-gray-100 dark:bg-gray-900">
+        <header className="flex h-14 items-center justify-between border-b bg-white dark:bg-gray-800 px-4 md:justify-end">
           <SidebarTrigger className="md:hidden" />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
              <Avatar className="h-8 w-8">
               <AvatarFallback>A</AvatarFallback>
             </Avatar>

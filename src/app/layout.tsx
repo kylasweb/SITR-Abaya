@@ -6,7 +6,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { StoreProvider } from '@/lib/store';
 import { AuthProvider } from '@/lib/auth';
-import { cookies } from 'next/headers';
+import { headers } from 'next/headers';
 
 
 export const metadata: Metadata = {
@@ -19,9 +19,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = cookies().get('x-next-pathname')?.value || '';
+  const headersList = headers();
+  const pathname = headersList.get('x-next-pathname') || '';
   const isAdminRoute = pathname.startsWith('/admin');
-  const isLoginPage = pathname === '/admin/login';
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -29,8 +29,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'bg-muted/50': isAdminRoute && !isLoginPage })}>
+      <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'font-sans': isAdminRoute })}>
         <AuthProvider>
           <StoreProvider>
             {!isAdminRoute && <Header />}

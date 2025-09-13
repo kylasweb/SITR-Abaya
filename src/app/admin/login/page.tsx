@@ -3,21 +3,19 @@ import AdminLoginForm from "./login-form";
 
 export default function AdminLoginPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/50 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8 flex flex-col items-center">
-            <div className="bg-primary text-primary-foreground p-3 rounded-full mb-4">
+        <div className="text-center mb-6 flex flex-col items-center">
+            <div className="bg-sidebar-background text-sidebar-foreground p-4 rounded-full mb-4">
                 <Logo className="h-8 w-8" />
             </div>
-          <h1 className="font-headline text-3xl md:text-4xl font-bold">SITR Admin</h1>
-          <p className="text-muted-foreground mt-2">Please enter the password to access the dashboard.</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">SITR Admin</h1>
         </div>
         <AdminLoginForm />
         {process.env.NODE_ENV !== 'production' && (
-          <div className="mt-4 rounded-lg border border-yellow-300 bg-yellow-50 p-3 text-center text-xs text-yellow-800">
-            <strong>Dev Note:</strong> The admin password is <br/>
-            <code className="font-mono font-semibold">{process.env.ADMIN_PASSWORD || '(not set)'}</code>
-          </div>
+           <p className="mt-6 text-center text-xs text-gray-500">
+            Development password: <code className="font-mono font-semibold text-gray-700 dark:text-gray-300">{process.env.ADMIN_PASSWORD || '(not set)'}</code>
+          </p>
         )}
       </div>
     </div>
