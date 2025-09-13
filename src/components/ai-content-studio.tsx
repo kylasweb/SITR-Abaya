@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent, useTransition } from 'react';
+import { useState, useTransition, FormEvent, ChangeEvent } from 'react';
 import { Bot, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,9 +8,35 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { generateContentAction, suggestContentAction } from '@/app/admin/ai-content-studio/actions';
+
+// Helper function to call the Puter AI
+async function handlePuterRequest(prompt: string): Promise<{ success: boolean; message: string; content?: string }> {
+  try {
+    // Safely access puter from the window object
+    const puter = (window as any).puter;
+    if (!puter || !puter.ai || typeof puter.ai.getCompletion !== 'function') {
+      throw new Error("Puter.js is not available. Make sure the script is loaded.");
+    }
+
+    const completion = await puter.ai.getCompletion(prompt);
+    
+    if (typeof completion !== 'string' || completion.trim() === '') {
+      return { success: false, message: "The AI did not return any content." };
+    }
+
+    return { success: true, message: "Success", content: completion };
+  } catch (error: any) {
+    console.error("Puter AI Action Error:", error);
+    let message = "An unexpected error occurred during AI generation.";
+    if (error.message) {
+      message = error.message;
+    }
+    return { success: false, message: message };
+  }
+}
+
 
 interface SubmitButtonProps {
   pending: boolean;
@@ -59,18 +85,14 @@ export default function AiContentStudio() {
 
   const [generatedContent, setGeneratedContent] = useState<Record<string, string>>({});
   const [formValues, setFormValues] = useState({
-      // Product Description
       pd_productType: 'Abaya',
       pd_keywords: '',
       pd_summary: '',
-      // Social Media
       sm_topic: '',
       sm_platform: 'Instagram',
       sm_tone: 'Elegant',
-      // SEO
       seo_productName: '',
       seo_keywords: '',
-      // Blog
       blog_topic: '',
   });
 
@@ -78,9 +100,9 @@ export default function AiContentStudio() {
     setFormValues(prev => ({ ...prev, [field]: value }));
   };
   
-  const getSuggestion = async (prompt: string, field: keyof typeof formValues) => {
+  const getSuggestion = (prompt: string, field: keyof typeof formValues) => {
     startSuggestionTransition(async () => {
-        const result = await suggestContentAction(prompt);
+        const result = await handlePuterRequest(prompt);
         if (result.success && result.content) {
             handleInputChange(field, result.content);
         } else {
@@ -89,10 +111,10 @@ export default function AiContentStudio() {
     });
   };
 
-  const handleGeneration = async (generatorType: string, prompt: string) => {
+  const handleGeneration = (generatorType: string, prompt: string) => {
     setGeneratedContent(prev => ({ ...prev, [generatorType]: '' }));
     startGenerationTransition(async () => {
-        const result = await generateContentAction(prompt);
+        const result = await handlePuterRequest(prompt);
         if (result.success && result.content) {
             setGeneratedContent(prev => ({ ...prev, [generatorType]: result.content! }));
         } else {
