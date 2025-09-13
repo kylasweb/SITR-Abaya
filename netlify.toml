@@ -1,0 +1,19 @@
+# Netlify configuration for a Next.js project
+
+[build]
+  # This command is the default for Next.js sites on Netlify.
+  command = "npm run build"
+  # The directory where Next.js builds the output.
+  publish = ".next"
+
+# This plugin is essential for deploying Next.js sites on Netlify.
+# It handles server-side rendering, API routes, and more.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Redirects and rewrites are crucial for single-page applications (SPAs)
+# and to ensure all routes are handled by Next.js.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
