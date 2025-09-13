@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useTransition } from 'react';
 import { Bot, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,8 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-
-declare const puter: any;
+import { generateContentAction, suggestContentAction } from '@/app/admin/ai-content-studio/actions';
 
 interface SubmitButtonProps {
   pending: boolean;
@@ -56,8 +54,9 @@ function OutputCard({ title, content }: { title: string, content: string }) {
 
 export default function AiContentStudio() {
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuggesting, setIsSuggesting] = useState<Record<string, boolean>>({});
+  const [isGenerating, startGenerationTransition] = useTransition();
+  const [isSuggesting, startSuggestionTransition] = useTransition();
+
   const [generatedContent, setGeneratedContent] = useState<Record<string, string>>({});
   const [formValues, setFormValues] = useState({
       // Product Description
@@ -78,40 +77,28 @@ export default function AiContentStudio() {
   const handleInputChange = (field: keyof typeof formValues, value: string) => {
     setFormValues(prev => ({ ...prev, [field]: value }));
   };
-
-  const handlePuterRequest = async (prompt: string): Promise<string | null> => {
-    if (typeof puter === 'undefined') {
-        toast({ variant: "destructive", title: "Puter.js not found", description: "Puter.js script might be blocked or not loaded." });
-        return null;
-    }
-    try {
-        const result = await puter.ai.getCompletion(prompt);
-        return result;
-    } catch (error) {
-        console.error(error);
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred. Check the console.";
-        toast({ variant: "destructive", title: "AI Request Failed", description: errorMessage });
-        return null;
-    }
-  };
   
   const getSuggestion = async (prompt: string, field: keyof typeof formValues) => {
-    setIsSuggesting(prev => ({ ...prev, [field]: true }));
-    const result = await handlePuterRequest(prompt);
-    if (result) {
-        handleInputChange(field, result);
-    }
-    setIsSuggesting(prev => ({ ...prev, [field]: false }));
+    startSuggestionTransition(async () => {
+        const result = await suggestContentAction(prompt);
+        if (result.success && result.content) {
+            handleInputChange(field, result.content);
+        } else {
+            toast({ variant: "destructive", title: "Suggestion Failed", description: result.message });
+        }
+    });
   };
 
   const handleGeneration = async (generatorType: string, prompt: string) => {
-    setIsLoading(true);
     setGeneratedContent(prev => ({ ...prev, [generatorType]: '' }));
-    const result = await handlePuterRequest(prompt);
-     if (result) {
-        setGeneratedContent(prev => ({ ...prev, [generatorType]: result }));
-    }
-    setIsLoading(false);
+    startGenerationTransition(async () => {
+        const result = await generateContentAction(prompt);
+        if (result.success && result.content) {
+            setGeneratedContent(prev => ({ ...prev, [generatorType]: result.content! }));
+        } else {
+            toast({ variant: "destructive", title: "Generation Failed", description: result.message });
+        }
+    });
   };
   
   const createProductDescription = (e: FormEvent<HTMLFormElement>) => {
@@ -203,7 +190,6 @@ Blog Post Ideas:`;
       handleGeneration('blogPostIdeas', prompt);
   };
 
-
   return (
     <Tabs defaultValue="product-description" className="w-full">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
@@ -236,8 +222,8 @@ Blog Post Ideas:`;
                 <div className="grid gap-2">
                     <div className="flex justify-between items-center">
                         <Label htmlFor="keywords-pd">Keywords</Label>
-                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest 5-7 relevant keywords for a ${formValues.pd_productType.toLowerCase()} for a luxury modest fashion brand. Return as a comma-separated list.`, 'pd_keywords')} disabled={isSuggesting['pd_keywords']}>
-                            {isSuggesting['pd_keywords'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest 5-7 relevant keywords for a ${formValues.pd_productType.toLowerCase()} for a luxury modest fashion brand. Return as a comma-separated list.`, 'pd_keywords')} disabled={isSuggesting}>
+                            {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
                             Suggest
                         </Button>
                     </div>
@@ -246,15 +232,15 @@ Blog Post Ideas:`;
                 <div className="grid gap-2">
                     <div className="flex justify-between items-center">
                         <Label htmlFor="summary-pd">Summary (Optional)</Label>
-                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Write a 1-2 sentence summary for a ${formValues.pd_productType.toLowerCase()} with these keywords: ${formValues.pd_keywords}.`, 'pd_summary')} disabled={isSuggesting['pd_summary'] || !formValues.pd_keywords}>
-                             {isSuggesting['pd_summary'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Write a 1-2 sentence summary for a ${formValues.pd_productType.toLowerCase()} with these keywords: ${formValues.pd_keywords}.`, 'pd_summary')} disabled={isSuggesting || !formValues.pd_keywords}>
+                             {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
                             Suggest
                         </Button>
                     </div>
                     <Textarea id="summary-pd" name="summary" placeholder="e.g., Inspired by starry nights, for formal events." rows={2} value={formValues.pd_summary} onChange={(e) => handleInputChange('pd_summary', e.target.value)} />
                 </div>
                 <div className="flex justify-end">
-                    <SubmitButton pending={isLoading} text="Generate Description" />
+                    <SubmitButton pending={isGenerating} text="Generate Description" />
                 </div>
                 <OutputCard title="Generated Product Description" content={generatedContent['productDescription']} />
             </form>
@@ -270,8 +256,8 @@ Blog Post Ideas:`;
                 <div className="grid gap-2">
                      <div className="flex justify-between items-center">
                         <Label htmlFor="topic-sm">Topic / Product Name</Label>
-                         <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest a creative topic for a social media post about a new luxury abaya.`, 'sm_topic')} disabled={isSuggesting['sm_topic']}>
-                            {isSuggesting['sm_topic'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                         <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest a creative topic for a social media post about a new luxury abaya.`, 'sm_topic')} disabled={isSuggesting}>
+                            {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
                             Suggest
                         </Button>
                     </div>
@@ -297,7 +283,7 @@ Blog Post Ideas:`;
                         <Select name="tone" value={formValues.sm_tone} onValueChange={(v) => handleInputChange('sm_tone', v)}>
                              <SelectTrigger id="tone-sm">
                                 <SelectValue placeholder="Select tone" />
-                            </Trigger>
+                            </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="Elegant">Elegant</SelectItem>
                                 <SelectItem value="Excited">Excited</SelectItem>
@@ -308,7 +294,7 @@ Blog Post Ideas:`;
                     </div>
                 </div>
                 <div className="flex justify-end">
-                    <SubmitButton pending={isLoading} text="Generate Post" />
+                    <SubmitButton pending={isGenerating} text="Generate Post" />
                 </div>
                 <OutputCard title="Generated Social Media Post" content={generatedContent['socialMediaPost']} />
             </form>
@@ -328,15 +314,15 @@ Blog Post Ideas:`;
                 <div className="grid gap-2">
                      <div className="flex justify-between items-center">
                         <Label htmlFor="keywords-seo">Primary Keywords</Label>
-                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest 3-4 primary SEO keywords for a product named "${formValues.seo_productName}". Return as a comma-separated list.`, 'seo_keywords')} disabled={isSuggesting['seo_keywords'] || !formValues.seo_productName}>
-                            {isSuggesting['seo_keywords'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest 3-4 primary SEO keywords for a product named "${formValues.seo_productName}". Return as a comma-separated list.`, 'seo_keywords')} disabled={isSuggesting || !formValues.seo_productName}>
+                            {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
                             Suggest
                         </Button>
                     </div>
                     <Input id="keywords-seo" name="keywords" placeholder="e.g., black silk abaya, luxury evening wear, UAE" required value={formValues.seo_keywords} onChange={(e) => handleInputChange('seo_keywords', e.target.value)} />
                 </div>
                 <div className="flex justify-end">
-                    <SubmitButton pending={isLoading} text="Generate Meta Description" />
+                    <SubmitButton pending={isGenerating} text="Generate Meta Description" />
                 </div>
                 <OutputCard title="Generated SEO Meta Description" content={generatedContent['seoDescription']} />
             </form>
@@ -352,15 +338,15 @@ Blog Post Ideas:`;
                 <div className="grid gap-2">
                      <div className="flex justify-between items-center">
                         <Label htmlFor="topic-blog">General Topic</Label>
-                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest an engaging blog topic related to modest fashion or abayas.`, 'blog_topic')} disabled={isSuggesting['blog_topic']}>
-                            {isSuggesting['blog_topic'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest an engaging blog topic related to modest fashion or abayas.`, 'blog_topic')} disabled={isSuggesting}>
+                            {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
                             Suggest
                         </Button>
                     </div>
                     <Input id="topic-blog" name="topic" placeholder="e.g., Styling abayas for summer" required value={formValues.blog_topic} onChange={(e) => handleInputChange('blog_topic', e.target.value)} />
                 </div>
                 <div className="flex justify-end">
-                    <SubmitButton pending={isLoading} text="Generate Ideas" />
+                    <SubmitButton pending={isGenerating} text="Generate Ideas" />
                 </div>
                 <OutputCard title="Generated Blog Post Ideas" content={generatedContent['blogPostIdeas']} />
             </form>
