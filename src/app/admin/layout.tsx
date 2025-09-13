@@ -5,15 +5,15 @@ import AdminLayoutClient from './admin-layout-client';
 const ADMIN_COOKIE_NAME = 'sitr-admin-auth';
 
 // This is a server component that handles authentication
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const authCookie = cookieStore.get(ADMIN_COOKIE_NAME);
   
-  const headersList = headers();
+  const headersList = await headers();
   const pathname = headersList.get('x-next-pathname') || '';
 
   // The login page should be accessible without being authenticated.
