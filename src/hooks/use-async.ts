@@ -3,33 +3,34 @@
 import { useState, useEffect, useCallback } from 'react';
 
 type AsyncState<T> = {
-  data: T | null;
+  data: T;
   loading: boolean;
   error: Error | null;
 };
 
 export function useAsync<T>(
   asyncFunction: () => Promise<T>,
-  immediate = true
+  immediate = true,
+  initialValue: T
 ) {
   const [state, setState] = useState<AsyncState<T>>({
-    data: null,
+    data: initialValue,
     loading: immediate,
     error: null,
   });
 
   const execute = useCallback(() => {
-    setState({ data: null, loading: true, error: null });
+    setState(prevState => ({ ...prevState, loading: true, error: null }));
     return asyncFunction()
       .then(response => {
         setState({ data: response, loading: false, error: null });
         return response;
       })
       .catch(error => {
-        setState({ data: null, loading: false, error: error });
+        setState({ data: initialValue, loading: false, error: error });
         throw error;
       });
-  }, [asyncFunction]);
+  }, [asyncFunction, initialValue]);
 
   useEffect(() => {
     if (immediate) {

@@ -15,7 +15,7 @@ export default function AccountingPage() {
     const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
     // Use a hook to fetch data so it can be re-fetched easily
-    const { data: expenses = [], loading, error, refresh } = useAsync(getAllExpenses);
+    const { data: expenses, loading, error, refresh } = useAsync(getAllExpenses, true, []);
 
     const handleSuccess = () => {
         setSelectedExpense(null); // Clear selection after successful save/update
