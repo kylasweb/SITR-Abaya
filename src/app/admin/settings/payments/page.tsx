@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
+import { getSiteSettings } from "@/lib/data";
 
-export default function PaymentsSettingsPage() {
+export default async function PaymentsSettingsPage() {
+  const settings = await getSiteSettings();
+
   return (
      <div className="max-w-4xl mx-auto">
        <header className="mb-8">
@@ -26,17 +28,17 @@ export default function PaymentsSettingsPage() {
                             Accept payments using Razorpay in India.
                         </CardDescription>
                     </div>
-                    <Switch id="razorpay-enabled" />
+                    <Switch id="razorpay-enabled" defaultChecked={settings.payments.razorpay.enabled} />
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="razorpay-key-id">Key ID</Label>
-                    <Input id="razorpay-key-id" placeholder="rzp_live_..." />
+                    <Input id="razorpay-key-id" placeholder="rzp_live_..." defaultValue={settings.payments.razorpay.keyId} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="razorpay-key-secret">Key Secret</Label>
-                    <Input id="razorpay-key-secret" type="password" placeholder="••••••••••••••••" />
+                    <Input id="razorpay-key-secret" type="password" placeholder="••••••••••••••••" defaultValue={settings.payments.razorpay.keySecret} />
                 </div>
             </CardContent>
             <CardFooter className="border-t px-6 py-4">
@@ -54,17 +56,17 @@ export default function PaymentsSettingsPage() {
                             Enable payments through the PhonePe gateway.
                         </CardDescription>
                     </div>
-                    <Switch id="phonepe-enabled" />
+                    <Switch id="phonepe-enabled" defaultChecked={settings.payments.phonepe.enabled} />
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                  <div className="space-y-2">
                     <Label htmlFor="phonepe-merchant-id">Merchant ID</Label>
-                    <Input id="phonepe-merchant-id" placeholder="Your PhonePe Merchant ID" />
+                    <Input id="phonepe-merchant-id" placeholder="Your PhonePe Merchant ID" defaultValue={settings.payments.phonepe.merchantId} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="phonepe-salt-key">Salt Key</Label>
-                    <Input id="phonepe-salt-key" type="password" placeholder="••••••••••••••••" />
+                    <Input id="phonepe-salt-key" type="password" placeholder="••••••••••••••••" defaultValue={settings.payments.phonepe.saltKey} />
                 </div>
             </CardContent>
             <CardFooter className="border-t px-6 py-4">
@@ -82,17 +84,17 @@ export default function PaymentsSettingsPage() {
                             Allow customers to pay using the Paytm gateway.
                         </CardDescription>
                     </div>
-                    <Switch id="paytm-enabled" />
+                    <Switch id="paytm-enabled" defaultChecked={settings.payments.paytm.enabled} />
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="paytm-merchant-id">Merchant ID (MID)</Label>
-                    <Input id="paytm-merchant-id" placeholder="Your Paytm Merchant ID" />
+                    <Input id="paytm-merchant-id" placeholder="Your Paytm Merchant ID" defaultValue={settings.payments.paytm.merchantId} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="paytm-merchant-key">Merchant Key</Label>
-                    <Input id="paytm-merchant-key" type="password" placeholder="••••••••••••••••" />
+                    <Input id="paytm-merchant-key" type="password" placeholder="••••••••••••••••" defaultValue={settings.payments.paytm.merchantKey} />
                 </div>
             </CardContent>
             <CardFooter className="border-t px-6 py-4">

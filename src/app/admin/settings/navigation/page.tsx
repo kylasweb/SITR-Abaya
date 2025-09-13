@@ -1,15 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { DragHandleDots2Icon } from "@radix-ui/react-icons";
 import { PlusCircle, Trash2 } from "lucide-react";
+import { getSiteSettings } from "@/lib/data";
 
-export default function NavigationSettingsPage() {
-  const menuItems = [
-    { id: 1, label: "Abayas", url: "/products" },
-    { id: 2, label: "Hijabs", url: "/collections/coming-soon" },
-  ];
+export default async function NavigationSettingsPage() {
+  const settings = await getSiteSettings();
+  const menuItems = settings.navigation.header;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -28,8 +26,8 @@ export default function NavigationSettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
-            {menuItems.map((item) => (
-              <div key={item.id} className="flex items-center gap-2 p-2 border rounded-lg bg-background">
+            {menuItems.map((item, index) => (
+              <div key={index} className="flex items-center gap-2 p-2 border rounded-lg bg-background">
                 <Button variant="ghost" size="icon" className="cursor-grab">
                     <DragHandleDots2Icon className="h-5 w-5 text-muted-foreground" />
                 </Button>

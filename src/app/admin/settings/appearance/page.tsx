@@ -2,8 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getSiteSettings } from "@/lib/data";
 
-export default function AppearanceSettingsPage() {
+export default async function AppearanceSettingsPage() {
+  const settings = await getSiteSettings();
+
   return (
      <div className="max-w-3xl mx-auto">
        <header className="mb-8">
@@ -23,19 +26,19 @@ export default function AppearanceSettingsPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="primary-color">Primary</Label>
-                    <Input id="primary-color" defaultValue="#000000" />
+                    <Input id="primary-color" defaultValue={settings.appearance.primaryColor} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="secondary-color">Secondary</Label>
-                    <Input id="secondary-color" defaultValue="#F6E9C7" />
+                    <Input id="secondary-color" defaultValue={settings.appearance.secondaryColor} />
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="accent-color">Accent</Label>
-                    <Input id="accent-color" defaultValue="#F6E9C7" />
+                    <Input id="accent-color" defaultValue={settings.appearance.accentColor} />
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="background-color">Background</Label>
-                    <Input id="background-color" defaultValue="#FAF8F5" />
+                    <Input id="background-color" defaultValue={settings.appearance.backgroundColor} />
                 </div>
             </div>
              <Button>Save Changes</Button>
