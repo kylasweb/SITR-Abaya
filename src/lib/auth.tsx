@@ -37,5 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
   };
 
+  // Do not render children until authentication state is resolved to prevent UI flashes
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 }
