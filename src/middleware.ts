@@ -4,10 +4,11 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // This is a bit of a workaround to pass the path to the root layout
-  // so it can decide whether to render the main header/footer.
   const response = NextResponse.next()
-  response.cookies.set('x-next-pathname', pathname)
+  
+  // Pass the pathname in a header so server components can read it.
+  response.headers.set('x-next-pathname', pathname)
+  
   return response
 }
 
