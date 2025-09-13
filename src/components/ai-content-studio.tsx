@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, FormEvent, ChangeEvent } from 'react';
+import { useState, useTransition, FormEvent } from 'react';
 import { Bot, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,17 +10,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { ai } from 'puter';
 
-// Helper function to call the Puter AI
+// This helper will now use the imported `ai` object from puter library
 async function handlePuterRequest(prompt: string): Promise<{ success: boolean; message: string; content?: string }> {
   try {
-    // Safely access puter from the window object
-    const puter = (window as any).puter;
-    if (!puter || !puter.ai || typeof puter.ai.getCompletion !== 'function') {
-      throw new Error("Puter.js is not available. Make sure the script is loaded.");
-    }
-
-    const completion = await puter.ai.getCompletion(prompt);
+    const completion = await ai.getCompletion(prompt);
     
     if (typeof completion !== 'string' || completion.trim() === '') {
       return { success: false, message: "The AI did not return any content." };
@@ -36,7 +31,6 @@ async function handlePuterRequest(prompt: string): Promise<{ success: boolean; m
     return { success: false, message: message };
   }
 }
-
 
 interface SubmitButtonProps {
   pending: boolean;
@@ -377,3 +371,5 @@ Blog Post Ideas:`;
     </Tabs>
   );
 }
+
+    
