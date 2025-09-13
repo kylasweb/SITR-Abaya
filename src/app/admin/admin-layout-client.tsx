@@ -87,10 +87,10 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === '/admin/generate-description'} tooltip="Generate Content">
-                <Link href="/admin/generate-description">
+              <SidebarMenuButton asChild isActive={pathname === '/admin/ai-content-studio'} tooltip="AI Content Studio">
+                <Link href="/admin/ai-content-studio">
                   <Bot />
-                  <span>Generate Content</span>
+                  <span>AI Content Studio</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
