@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -29,7 +28,7 @@ const mainNav = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { cart, wishlist, setCurrency } = useStore();
+  const { cart, wishlist, setCurrency, selectedCurrency } = useStore();
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -50,7 +49,8 @@ export default function Header() {
         Free Worldwide Shipping on Orders Over $200
       </div>
       <div className="container flex h-20 items-center">
-        <div className="flex-1 md:hidden">
+        {/* Mobile Menu Trigger */}
+        <div className="flex-none md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
                 <Button
@@ -86,6 +86,7 @@ export default function Header() {
             </Sheet>
         </div>
 
+        {/* Left-side Navigation (Desktop) */}
         <div className="flex-1 justify-start items-center hidden md:flex">
              <nav className="flex items-center space-x-6 text-sm">
                 {mainNav.slice(0, 2).map((item) => (
@@ -100,13 +101,15 @@ export default function Header() {
              </nav>
         </div>
 
-        <div className="flex-2 flex justify-center">
+        {/* Center Logo */}
+        <div className="flex-none justify-center px-4">
             <Link href="/" className="flex items-center gap-2">
                 <Logo className="h-7 w-7" />
                 <span className="font-headline text-3xl font-bold tracking-tighter">SITR</span>
             </Link>
         </div>
 
+        {/* Right-side Navigation & Actions (Desktop) */}
         <div className="flex-1 flex justify-end items-center">
              <nav className="hidden md:flex items-center space-x-6 text-sm">
                 {mainNav.slice(2).map((item) => (
@@ -126,12 +129,13 @@ export default function Header() {
                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" aria-label="Select Currency">
-                        <Globe className="h-5 w-5" />
+                            <Globe className="h-5 w-5" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         {currencies.map(currency => (
                         <DropdownMenuItem key={currency.code} onSelect={() => setCurrency(currency.code)}>
+                             {selectedCurrency.code === currency.code && <Check className="mr-2 h-4 w-4" />}
                             {currency.code} - {currency.name}
                         </DropdownMenuItem>
                         ))}

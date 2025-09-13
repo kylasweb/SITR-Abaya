@@ -110,6 +110,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const currency = currencies.find(c => c.code === currencyCode);
     if (currency) {
       setSelectedCurrency(currency);
+       toast({ title: "Currency Updated", description: `Prices are now shown in ${currency.name} (${currency.code}).` });
     }
   };
 
