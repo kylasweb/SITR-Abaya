@@ -78,14 +78,14 @@ export default function AiContentStudio() {
   const handleInputChange = (field: keyof typeof formValues, value: string) => {
     setFormValues(prev => ({ ...prev, [field]: value }));
   };
-
+  
   const getSuggestion = async (prompt: string, field: keyof typeof formValues) => {
     setIsSuggesting(prev => ({ ...prev, [field]: true }));
     try {
         if (typeof puter === 'undefined') {
             throw new Error('Puter.js is not available.');
         }
-        const result = await puter.ai.chat(prompt);
+        const result = await puter.ai.getCompletion(prompt);
         if (result) {
             handleInputChange(field, result);
         } else {
@@ -109,7 +109,8 @@ export default function AiContentStudio() {
       if (typeof puter === 'undefined') {
         throw new Error('Puter.js is not available.');
       }
-      const result = await puter.ai.chat(prompt);
+      // Use getCompletion for unauthenticated text generation
+      const result = await puter.ai.getCompletion(prompt);
 
       if (result) {
         setGeneratedContent(prev => ({ ...prev, [generatorType]: result }));
@@ -209,7 +210,7 @@ Meta Description:`;
         }
       const prompt = `You are a content strategist for a luxury fashion brand.
 
-Generate 5 blog post ideas based on the topic: "${topic}".
+Generate 5 blog post ideas based on the topic: "${blog_topic}".
 The ideas should be engaging, relevant to an audience interested in modest fashion, and aimed at driving traffic to an e-commerce store.
 
 Format the output as a numbered list.
