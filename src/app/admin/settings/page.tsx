@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings, Palette, Route, Brush } from 'lucide-react';
+import { Settings, Palette, Route, Brush, CreditCard } from 'lucide-react';
 
 const settingsLinks = [
   {
@@ -26,6 +26,12 @@ const settingsLinks = [
     title: 'Theme Editor',
     description: 'Visually edit your theme colors.',
     icon: <Brush className="h-8 w-8 text-primary" />,
+  },
+  {
+    href: '/admin/settings/payments',
+    title: 'Payment Gateways',
+    description: 'Connect and manage payment providers.',
+    icon: <CreditCard className="h-8 w-8 text-primary" />,
   },
 ];
 
