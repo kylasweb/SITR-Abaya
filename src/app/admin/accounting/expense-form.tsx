@@ -94,12 +94,12 @@ export function ExpenseForm({ expense = null, onSuccess }: ExpenseFormProps) {
   useEffect(() => {
      form.reset({
       id: expense?.id || undefined,
-      date: expense?.date || new Date(),
+      date: expense?.date ? new Date(expense.date) : new Date(),
       category: expense?.category || "",
       amount: expense?.amount || 0,
       description: expense?.description || "",
     });
-  }, [expense, form]);
+  }, [expense]);
 
   return (
      <Card>
@@ -223,7 +223,10 @@ export function ExpenseForm({ expense = null, onSuccess }: ExpenseFormProps) {
             
             <div className="flex justify-end gap-2">
                 {expense && (
-                    <Button type="button" variant="ghost" onClick={() => form.reset({ date: new Date(), category: "", amount: 0, description: "" })}>
+                    <Button type="button" variant="ghost" onClick={() => {
+                        setSelectedExpense(null);
+                        form.reset({ date: new Date(), category: "", amount: 0, description: "", id: undefined });
+                    }}>
                         Cancel Edit
                     </Button>
                 )}

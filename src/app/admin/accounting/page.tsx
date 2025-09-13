@@ -10,6 +10,23 @@ import type { Expense } from "@/lib/types";
 import { useRouter } from 'next/navigation';
 import { useAsync } from '@/hooks/use-async';
 
+// This is a new component that wraps the form and manages its selection state.
+function ExpenseFormWrapper({ onSaveSuccess }: { onSaveSuccess: () => void }) {
+    const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+
+    const handleEdit = (expense: Expense) => {
+        setSelectedExpense(expense);
+    };
+
+    const handleSuccess = () => {
+        setSelectedExpense(null); // Clear selection after successful save/update
+        onSaveSuccess();
+    };
+
+    return <ExpenseForm expense={selectedExpense} onSuccess={handleSuccess} setSelectedExpense={setSelectedExpense} />;
+}
+
+
 export default function AccountingPage() {
     const router = useRouter();
     const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
@@ -22,7 +39,7 @@ export default function AccountingPage() {
         refresh(); // Re-fetch the expenses
     };
 
-    const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const totalExpenses = (expenses || []).reduce((sum, expense) => sum + expense.amount, 0);
 
     return (
         <div className="space-y-8">
@@ -48,7 +65,7 @@ export default function AccountingPage() {
                         <CardContent>
                             {loading && <p>Loading expenses...</p>}
                             {error && <p className="text-destructive">Failed to load expenses.</p>}
-                            {!loading && !error && expenses.length > 0 ? (
+                            {!loading && !error && expenses && expenses.length > 0 ? (
                                 <ExpenseTable expenses={expenses} onEdit={setSelectedExpense} />
                             ) : (
                                 !loading && (
@@ -73,7 +90,7 @@ export default function AccountingPage() {
                              </p>
                         </CardContent>
                     </Card>
-                    <ExpenseForm expense={selectedExpense} onSuccess={handleSuccess} />
+                    <ExpenseForm expense={selectedExpense} onSuccess={handleSuccess} setSelectedExpense={setSelectedExpense} />
                 </div>
             </div>
         </div>
