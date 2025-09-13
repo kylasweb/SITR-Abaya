@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Heart, Menu, Search, ShoppingBag, User, Globe, X } from 'lucide-react';
+import { Heart, Menu, Search, ShoppingBag, User, Globe, X, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
