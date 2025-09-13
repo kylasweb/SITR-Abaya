@@ -55,8 +55,8 @@ export type Order = {
   total: number;
   currency: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  createdAt: any; // Firestore Timestamp
-  updatedAt: any; // Firestore Timestamp
+  createdAt: Date; 
+  updatedAt: Date;
 };
 
 export type NewOrder = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;

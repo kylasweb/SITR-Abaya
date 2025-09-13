@@ -17,7 +17,6 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 
 function OrderHistoryItem({ order }: { order: Order }) {
-    const { selectedCurrency } = useStore();
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat(undefined, {
             style: 'currency',
@@ -73,25 +72,44 @@ export default function ProfilePage() {
             description: "Thank you for your purchase. You can view it in your order history.",
         });
         clearCart();
-        router.replace('/account/profile'); // Clean up URL
+        // Use replace to remove the query param from the URL without adding to history
+        router.replace('/account/profile', {scroll: false}); 
     }
-  }, [searchParams, clearCart, toast, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // Fetch orders when user is available
   useEffect(() => {
     async function fetchOrders() {
       if (user) {
         setLoadingOrders(true);
-        const userOrders = await getOrdersByUserId(user.uid);
-        setOrders(userOrders);
-        setLoadingOrders(false);
+        try {
+          const userOrders = await getOrdersByUserId(user.uid);
+          setOrders(userOrders);
+        } catch (error) {
+          console.error("Failed to fetch orders:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch your order history.",
+          });
+        } finally {
+          setLoadingOrders(false);
+        }
       }
     }
     fetchOrders();
-  }, [user]);
+  }, [user, toast]);
 
   // Redirect to login if not authenticated and not loading
-  if (authLoading) {
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [authLoading, user, router]);
+
+
+  if (authLoading || !user) {
     // Show a global loading state while checking auth
     return (
        <div className="container mx-auto px-4 py-8 md:py-12">
@@ -99,13 +117,43 @@ export default function ProfilePage() {
           <Skeleton className="h-12 w-1/2" />
           <Skeleton className="h-4 w-3/4 mt-4" />
         </header>
+         <div className="grid md:grid-cols-3 gap-8">
+            <div className="md:col-span-1">
+                 <Card>
+                    <CardHeader className="items-center text-center">
+                        <Skeleton className="h-24 w-24 rounded-full" />
+                        <Skeleton className="h-6 w-32 mt-4" />
+                        <Skeleton className="h-4 w-40 mt-2" />
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-2">
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="md:col-span-2">
+                <Card>
+                    <CardHeader>
+                        <Skeleton className="h-8 w-48" />
+                        <Skeleton className="h-4 w-64 mt-2" />
+                    </CardHeader>
+                    <CardContent>
+                         <ul className="space-y-4">
+                            {[...Array(2)].map((_, i) => (
+                                <li key={i} className="p-4 border rounded-lg space-y-3">
+                                <Skeleton className="h-5 w-1/3" />
+                                <Skeleton className="h-3 w-1/2" />
+                                <Separator className="my-3" />
+                                <Skeleton className="h-8 w-full" />
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+            </div>
+         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    router.push('/login');
-    return null; // Prevent rendering anything while redirecting
   }
 
   const getInitials = (name?: string | null) => {
