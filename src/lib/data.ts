@@ -257,3 +257,29 @@ export async function getAllOrders(): Promise<Order[]> {
         return [];
     }
 }
+
+// Fetches all registered users from the 'users' collection.
+export async function getAllUsers(): Promise<UserData[]> {
+    try {
+        const usersCollection = collection(db, 'users');
+        const q = query(usersCollection, orderBy('createdAt', 'desc'));
+        const userSnapshot = await getDocs(q);
+
+        if (userSnapshot.empty) {
+            return [];
+        }
+
+        const userList = userSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                ...data,
+                createdAt: data.createdAt.toDate(),
+            } as UserData;
+        });
+
+        return userList;
+    } catch (error) {
+        console.error("Error fetching all users from Firestore:", error);
+        return [];
+    }
+}
