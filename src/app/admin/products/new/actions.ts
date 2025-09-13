@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { collection, addDoc, doc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { NewProduct } from "@/lib/types";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "@/lib/firebase";
+import type { NewProduct } from "@/lib/types";
 
 export type FormState = {
   message: string;
@@ -11,7 +12,6 @@ export type FormState = {
   timestamp: number;
 };
 
-// Helper to generate a URL-friendly slug from a string
 const createSlug = (name: string) => {
   return name
     .toLowerCase()
@@ -19,7 +19,13 @@ const createSlug = (name: string) => {
     .replace(/[^\w-]+/g, "");
 };
 
-// This is the server action that will be called when the form is submitted.
+async function uploadImage(image: File, productId: string): Promise<string> {
+  const storageRef = ref(storage, `products/${productId}/${image.name}`);
+  const snapshot = await uploadBytes(storageRef, image);
+  const downloadURL = await getDownloadURL(snapshot.ref);
+  return downloadURL;
+}
+
 export async function addProductAction(
   prevState: FormState,
   formData: FormData
@@ -30,23 +36,24 @@ export async function addProductAction(
     const price = Number(formData.get("price"));
     const category = formData.get("category") as string;
     
-    // For array fields from the form
-    const tags = formData.getAll("tags").map(tag => (tag as string)).filter(Boolean);
-    const sizes = formData.getAll("sizes").map(size => (size as string)).filter(Boolean);
-    const materials = formData.getAll("materials").map(material => (material as string)).filter(Boolean);
-    const imageIds = (formData.get("imageIds") as string).split(',').map(id => id.trim());
+    const tags = (formData.get("tags") as string).split(',').map(t => t.trim()).filter(Boolean);
+    const sizes = (formData.get("sizes") as string).split(',').map(s => s.trim()).filter(Boolean);
+    const materials = (formData.get("materials") as string).split(',').map(m => m.trim()).filter(Boolean);
+    const images = formData.getAll("images") as File[];
 
-    // Basic validation
-    if (!name || !description || !price || !category || tags.length === 0 || sizes.length === 0 || materials.length === 0 || imageIds.length === 0) {
+    if (!name || !description || !price || !category || tags.length === 0 || sizes.length === 0 || materials.length === 0 || images.length === 0) {
       return {
-        message: "All fields are required and cannot be empty.",
+        message: "All fields including at least one image are required.",
         success: false,
         timestamp: Date.now(),
       };
     }
     
-    const slug = createSlug(name);
     const newProductId = `prod_${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`;
+    const slug = createSlug(name);
+
+    // Upload images to Firebase Storage
+    const imageUrls = await Promise.all(images.map(image => uploadImage(image, newProductId)));
 
     const newProduct: NewProduct = {
       name,
@@ -54,22 +61,25 @@ export async function addProductAction(
       price,
       category,
       tags,
-      images: imageIds.map(id => ({ id })), // Storing only IDs
+      images: imageUrls.map(url => ({
+        url,
+        alt: name, // Use product name as a default alt text
+        aiHint: `${category} abaya`,
+        id: '' // ID is not from placeholders anymore
+      })),
       variants: {
         size: sizes,
-        color: ['Black'], // Assuming black is the only color for now
+        color: ['Black'],
         material: materials,
       },
     };
     
-    // Add the new product to Firestore
     const productsCollection = collection(db, "products");
     await setDoc(doc(productsCollection, newProductId), { ...newProduct, slug });
 
-
-    // Revalidate the products page to show the new product
     revalidatePath("/admin/products");
     revalidatePath("/products");
+    revalidatePath("/");
 
     return {
       message: `Product "${name}" has been successfully created.`,

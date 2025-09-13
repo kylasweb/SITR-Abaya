@@ -1,6 +1,6 @@
 export type ProductImage = {
-  id: string;
-  url: string;
+  id: string; // Placeholder ID or future reference
+  url: string; // URL from Firebase Storage or placeholder service
   alt: string;
   aiHint: string;
 };
@@ -23,7 +23,10 @@ export type Product = {
   tags: string[];
 };
 
-export type NewProduct = Omit<Product, 'id' | 'slug'>;
+export type NewProduct = Omit<Product, 'id' | 'slug' | 'images'> & {
+  images: { url: string; alt: string; aiHint: string }[];
+};
+
 
 export type EditableProduct = {
   id: string;
@@ -34,7 +37,7 @@ export type EditableProduct = {
   tags: string[];
   sizes: string[];
   materials: string[];
-  imageIds: string;
+  imageUrls: string[]; // We'll manage existing images by URL
 }
 
 export type CartItem = {

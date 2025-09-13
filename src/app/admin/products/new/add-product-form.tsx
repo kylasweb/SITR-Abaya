@@ -1,8 +1,9 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,21 +23,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, PlusCircle, Trash2 } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { addProductAction } from "./actions";
 import { useFormState, useFormStatus } from "react-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const productSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters."),
   description: z.string().min(10, "Description must be at least 10 characters."),
   price: z.coerce.number().positive("Price must be a positive number."),
   category: z.string().min(1, "Category is required."),
-  tags: z.array(z.object({ value: z.string().min(1, 'Tag cannot be empty') })).min(1, "At least one tag is required."),
-  sizes: z.array(z.object({ value: z.string().min(1, 'Size cannot be empty') })).min(1, "At least one size is required."),
-  materials: z.array(z.object({ value: z.string().min(1, 'Material cannot be empty') })).min(1, "At least one material is required."),
-  imageIds: z.string().min(1, "At least one image ID is required."),
+  tags: z.string().min(1, "At least one tag is required."),
+  sizes: z.string().min(1, "At least one size is required."),
+  materials: z.string().min(1, "At least one material is required."),
+  images: z.array(z.instanceof(File))
+    .min(1, "At least one image is required.")
+    .max(5, "You can upload a maximum of 5 images.")
+    .refine(files => files.every(file => file.size <= MAX_FILE_SIZE), `Max file size is 5MB.`)
+    .refine(files => files.every(file => ACCEPTED_IMAGE_TYPES.includes(file.type)), "Only .jpg, .jpeg, .png and .webp formats are supported."),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -68,6 +76,8 @@ export function AddProductForm() {
   const { toast } = useToast();
   const [state, formAction] = useFormState(addProductAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -76,16 +86,31 @@ export function AddProductForm() {
       description: "",
       price: 0,
       category: "",
-      tags: [{ value: "elegant" }],
-      sizes: [{ value: "52" }, { value: "54" }, { value: "56" }],
-      materials: [{ value: "Silk" }],
-      imageIds: "abaya-1-front,abaya-1-side,abaya-1-back,abaya-1-detail",
+      tags: "elegant, modern",
+      sizes: "52, 54, 56, 58",
+      materials: "Nida",
+      images: [],
     },
   });
 
-  const { fields: tagFields, append: appendTag, remove: removeTag } = useFieldArray({ control: form.control, name: "tags" });
-  const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
-  const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({ control: form.control, name: "materials" });
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    form.setValue("images", files);
+
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
+  
+  const removeImage = (index: number) => {
+    const newPreviews = [...imagePreviews];
+    newPreviews.splice(index, 1);
+    setImagePreviews(newPreviews);
+    
+    const newImages = [...form.getValues('images')];
+    newImages.splice(index, 1);
+    form.setValue('images', newImages);
+  };
+
 
   useEffect(() => {
     if (state.timestamp && state.message) {
@@ -95,6 +120,7 @@ export function AddProductForm() {
           description: state.message,
         });
         form.reset();
+        setImagePreviews([]);
         formRef.current?.reset();
       } else {
         toast({
@@ -112,9 +138,67 @@ export function AddProductForm() {
       <form
         ref={formRef}
         action={formAction}
-        onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))}
+        onSubmit={form.handleSubmit(() => {
+          const formData = new FormData();
+          const values = form.getValues();
+          Object.entries(values).forEach(([key, value]) => {
+            if (key === 'images') {
+              (value as File[]).forEach(file => formData.append('images', file));
+            } else {
+              formData.append(key, String(value));
+            }
+          });
+          formAction(formData);
+        })}
         className="space-y-8"
       >
+        {/* Image Upload */}
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product Images</FormLabel>
+              <FormControl>
+                <div className="flex flex-col items-center justify-center w-full">
+                    <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/80">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
+                            <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p className="text-xs text-muted-foreground">PNG, JPG, or WEBP (MAX. 5MB each)</p>
+                        </div>
+                        <input id="dropzone-file" type="file" className="hidden" multiple onChange={handleImageChange} accept="image/png, image/jpeg, image/webp" />
+                    </label> 
+                </div> 
+              </FormControl>
+              <FormDescription>
+                Upload up to 5 images. The first image will be the main display image.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Image Previews */}
+        {imagePreviews.length > 0 && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+            {imagePreviews.map((src, index) => (
+              <div key={index} className="relative aspect-square">
+                <Image src={src} alt={`Preview ${index + 1}`} fill className="object-cover rounded-md" />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                  onClick={() => removeImage(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="name"
@@ -180,111 +264,51 @@ export function AddProductForm() {
             )}
             />
         </div>
-        
+
         <FormField
           control={form.control}
-          name="imageIds"
+          name="sizes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Image Placeholder IDs</FormLabel>
+              <FormLabel>Sizes</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., abaya-9-front,abaya-9-side" {...field} />
+                <Input placeholder="52, 54, 56, 58" {...field} />
               </FormControl>
-              <FormDescription>
-                Comma-separated list of image placeholder IDs from placeholder-images.json.
-              </FormDescription>
+              <FormDescription>Comma-separated list of available sizes.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="materials"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Materials</FormLabel>
+              <FormControl>
+                <Input placeholder="Silk, Crepe, Nida" {...field} />
+              </FormControl>
+               <FormDescription>Comma-separated list of materials.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <div className="space-y-4">
-            <div>
-                <FormLabel>Sizes</FormLabel>
-                <FormDescription>The available sizes for this product.</FormDescription>
-            </div>
-             {sizeFields.map((field, index) => (
-                <FormField
-                key={field.id}
-                control={form.control}
-                name={`sizes.${index}.value`}
-                render={({ field }) => (
-                    <FormItem className="flex items-center gap-4">
-                         <FormControl>
-                            <Input placeholder="e.g., 52" {...field} />
-                        </FormControl>
-                        <Button type="button" variant="destructive" size="icon" onClick={() => removeSize(index)}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </FormItem>
-                )}
-                />
-            ))}
-             <Button type="button" variant="outline" size="sm" onClick={() => appendSize({ value: '' })}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Size
-            </Button>
-            <FormMessage>{form.formState.errors.sizes?.message}</FormMessage>
-        </div>
-
-         <div className="space-y-4">
-            <div>
-                <FormLabel>Materials</FormLabel>
-                <FormDescription>The materials used in this product.</FormDescription>
-            </div>
-             {materialFields.map((field, index) => (
-                <FormField
-                key={field.id}
-                control={form.control}
-                name={`materials.${index}.value`}
-                render={({ field }) => (
-                    <FormItem className="flex items-center gap-4">
-                         <FormControl>
-                            <Input placeholder="e.g., Silk" {...field} />
-                        </FormControl>
-                        <Button type="button" variant="destructive" size="icon" onClick={() => removeMaterial(index)}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </FormItem>
-                )}
-                />
-            ))}
-             <Button type="button" variant="outline" size="sm" onClick={() => appendMaterial({ value: '' })}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Material
-            </Button>
-             <FormMessage>{form.formState.errors.materials?.message}</FormMessage>
-        </div>
-
-         <div className="space-y-4">
-            <div>
-                <FormLabel>Tags</FormLabel>
-                <FormDescription>Keywords for searching and filtering.</FormDescription>
-            </div>
-             {tagFields.map((field, index) => (
-                <FormField
-                key={field.id}
-                control={form.control}
-                name={`tags.${index}.value`}
-                render={({ field }) => (
-                    <FormItem className="flex items-center gap-4">
-                         <FormControl>
-                            <Input placeholder="e.g., elegant" {...field} />
-                        </FormControl>
-                        <Button type="button" variant="destructive" size="icon" onClick={() => removeTag(index)}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </FormItem>
-                )}
-                />
-            ))}
-             <Button type="button" variant="outline" size="sm" onClick={() => appendTag({ value: '' })}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Tag
-            </Button>
-             <FormMessage>{form.formState.errors.tags?.message}</FormMessage>
-        </div>
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <Input placeholder="elegant, modern, classic" {...field} />
+              </FormControl>
+               <FormDescription>Comma-separated list of tags for searching.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         
         <SubmitButton />
       </form>
