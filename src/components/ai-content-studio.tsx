@@ -10,12 +10,14 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { ai } from 'puter';
 
-// This helper will now use the imported `ai` object from puter library
+// This helper will now use the puter object from the window
 async function handlePuterRequest(prompt: string): Promise<{ success: boolean; message: string; content?: string }> {
   try {
-    const completion = await ai.getCompletion(prompt);
+    if (typeof window === 'undefined' || !(window as any).puter) {
+      return { success: false, message: "Puter.js is not available. Please ensure it is loaded correctly." };
+    }
+    const completion = await (window as any).puter.ai.getCompletion(prompt);
     
     if (typeof completion !== 'string' || completion.trim() === '') {
       return { success: false, message: "The AI did not return any content." };
@@ -371,5 +373,3 @@ Blog Post Ideas:`;
     </Tabs>
   );
 }
-
-    
