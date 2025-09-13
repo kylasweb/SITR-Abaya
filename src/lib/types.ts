@@ -123,10 +123,21 @@ export type PaymentSettings = {
     paytm: PaymentGatewaySettings;
 }
 
+export type FeatureItem = {
+    icon: string;
+    title: string;
+    description: string;
+}
+
+export type HomepageSettings = {
+    featureItems: FeatureItem[];
+}
+
 
 export type SiteSettings = {
     general: GeneralSettings;
     appearance: AppearanceSettings;
     navigation: NavigationSettings;
     payments: PaymentSettings;
+    homepage: HomepageSettings;
 }

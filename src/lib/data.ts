@@ -208,6 +208,16 @@ const defaultSettings: SiteSettings = {
         razorpay: { enabled: false, keyId: '', keySecret: '' },
         phonepe: { enabled: false, merchantId: '', saltKey: '' },
         paytm: { enabled: false, merchantId: '', merchantKey: '' }
+    },
+    homepage: {
+        featureItems: [
+            { icon: 'Gem', title: 'Exquisite Quality', description: 'Our abayas are crafted from the finest materials, ensuring a luxurious feel and a lasting impression.' },
+            { icon: 'Palette', title: 'Timeless Designs', description: 'Each piece is thoughtfully designed, blending traditional modesty with contemporary elegance.' },
+            { icon: 'Leaf', title: 'Ethically Made', description: 'We are committed to ethical practices, ensuring our garments are made with integrity and care.' },
+            { icon: 'HandHeart', title: 'Customer-Centric', description: 'Your satisfaction is our priority. We offer a shopping experience that is as seamless as it is personal.' },
+            { icon: 'Ruler', title: 'Inclusive Sizing', description: 'We celebrate all body types, offering special collections for petite women and a range of inclusive sizes.' },
+            { icon: 'Truck', title: 'Reliable Service', description: 'Enjoy seamless shopping with fast, worldwide shipping and dedicated customer support.' },
+        ]
     }
 };
 
@@ -225,6 +235,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
                 appearance: { ...defaultSettings.appearance, ...dbSettings.appearance },
                 navigation: { ...defaultSettings.navigation, ...dbSettings.navigation },
                 payments: { ...defaultSettings.payments, ...dbSettings.payments },
+                homepage: { ...defaultSettings.homepage, ...dbSettings.homepage },
             };
         } else {
             console.warn("Site settings not found in Firestore. Returning default settings.");

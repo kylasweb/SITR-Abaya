@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings, Palette, Route, Brush, CreditCard } from 'lucide-react';
+import { Settings, Palette, Route, Brush, CreditCard, Home } from 'lucide-react';
 
 const settingsLinks = [
   {
@@ -20,6 +20,12 @@ const settingsLinks = [
     title: 'Navigation',
     description: 'Control your site’s menus and navigation.',
     icon: <Route className="h-8 w-8 text-primary" />,
+  },
+  {
+    href: '/admin/settings/homepage',
+    title: 'Homepage Content',
+    description: 'Manage content sections on the homepage.',
+    icon: <Home className="h-8 w-8 text-primary" />,
   },
    {
     href: '/admin/settings/theme',
