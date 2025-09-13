@@ -1,13 +1,17 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { DollarSign, ShoppingCart, Users, Package } from "lucide-react";
+import { DollarSign, ShoppingCart, Users, Package, Loader2 } from "lucide-react";
 import { getAllOrders, getAllUsers, getProducts } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Order } from "@/lib/types";
+import type { Order, Product, UserData } from "@/lib/types";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
-import { ChartConfig } from "@/components/ui/chart";
-import { subDays, format, startOfWeek } from 'date-fns';
+import type { ChartConfig } from "@/components/ui/chart";
+import { subDays, format } from 'date-fns';
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Helper to format price
 const formatPrice = (price: number, currencyCode: string = 'USD') => {
@@ -65,12 +69,32 @@ const chartConfig: ChartConfig = {
 };
 
 
-export default async function AdminDashboardPage() {
-  const [orders, users, products] = await Promise.all([
-    getAllOrders(),
-    getAllUsers(),
-    getProducts()
-  ]);
+export default function AdminDashboardPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+        setLoading(true);
+        try {
+            const [ordersData, usersData, productsData] = await Promise.all([
+                getAllOrders(),
+                getAllUsers(),
+                getProducts()
+            ]);
+            setOrders(ordersData);
+            setUsers(usersData);
+            setProducts(productsData);
+        } catch (error) {
+            console.error("Failed to fetch dashboard data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchData();
+  }, []);
 
   const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
   const totalSales = orders.length;
@@ -79,6 +103,51 @@ export default async function AdminDashboardPage() {
 
   const recentOrders = getRecentOrders(orders, 5);
   const weeklyChartData = processChartData(orders);
+
+   if (loading) {
+    return (
+      <div className="space-y-8">
+        <header>
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-4 w-64 mt-2" />
+        </header>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[...Array(4)].map((_, i) => (
+                <Card key={i}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-6 w-6" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-32" />
+                        <Skeleton className="h-3 w-40 mt-1" />
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
+         <div className="grid grid-cols-1 lg:grid-cols-7 gap-8">
+            <Card className="lg:col-span-4">
+                 <CardHeader>
+                    <Skeleton className="h-6 w-40" />
+                    <Skeleton className="h-4 w-56 mt-1" />
+                </CardHeader>
+                <CardContent>
+                    <Skeleton className="min-h-[250px] w-full" />
+                </CardContent>
+            </Card>
+             <Card className="lg:col-span-3">
+                 <CardHeader>
+                    <Skeleton className="h-6 w-32" />
+                    <Skeleton className="h-4 w-48 mt-1" />
+                </CardHeader>
+                <CardContent>
+                    <Skeleton className="h-40 w-full" />
+                </CardContent>
+            </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
