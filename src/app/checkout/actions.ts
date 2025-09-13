@@ -20,6 +20,7 @@ export async function placeOrderAction(
   try {
     // --- Data Extraction ---
     const userId = formData.get("userId") as string;
+    const customerName = formData.get("name") as string;
     const currency = formData.get("currency") as string;
     const cartItemsJSON = formData.get("cartItems") as string;
     
@@ -67,6 +68,7 @@ export async function placeOrderAction(
     // --- Order Creation ---
     const newOrder: NewOrder = {
       userId,
+      customerName,
       items: cartItems,
       shippingAddress,
       subtotal,

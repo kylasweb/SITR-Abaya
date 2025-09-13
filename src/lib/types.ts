@@ -60,6 +60,7 @@ export type ShippingAddress = {
 export type Order = {
   id: string; // This is the Firestore document ID
   userId: string;
+  customerName: string;
   items: CartItem[];
   shippingAddress: ShippingAddress;
   subtotal: number;
@@ -72,3 +73,10 @@ export type Order = {
 };
 
 export type NewOrder = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
+
+export type UserData = {
+    uid: string;
+    name: string;
+    email: string;
+    createdAt: Date;
+}

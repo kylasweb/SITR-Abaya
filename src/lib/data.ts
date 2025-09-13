@@ -1,4 +1,4 @@
-import { Product, Order, EditableProduct } from './types';
+import { Product, Order, EditableProduct, UserData } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import { db } from './firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy } from 'firebase/firestore';
@@ -228,4 +228,32 @@ export async function getOrdersByUserId(userId: string): Promise<Order[]> {
     console.error("Error fetching orders from Firestore:", error);
     return []; // Return empty array on error
   }
+}
+
+// Fetches all orders from Firestore for the admin panel.
+export async function getAllOrders(): Promise<Order[]> {
+    try {
+        const ordersCollection = collection(db, 'orders');
+        const q = query(ordersCollection, orderBy('createdAt', 'desc'));
+        const orderSnapshot = await getDocs(q);
+
+        if (orderSnapshot.empty) {
+            return [];
+        }
+
+        const orderList = orderSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                createdAt: data.createdAt.toDate(),
+                updatedAt: data.updatedAt.toDate(),
+            } as Order;
+        });
+
+        return orderList;
+    } catch (error) {
+        console.error("Error fetching all orders from Firestore:", error);
+        return [];
+    }
 }

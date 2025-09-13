@@ -61,8 +61,8 @@ export default function AdminLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="#">
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/admin/orders')}>
+                <Link href="/admin/orders">
                   <ShoppingCart />
                   <span>Orders</span>
                 </Link>
