@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Logo } from './icons';
+import { ThemeToggle } from './theme-toggle';
 
 const mainNav = [
   { href: '/products', label: 'Abayas' },
@@ -48,8 +49,8 @@ export default function Header() {
       <div className="container px-4">
         {/* Top bar: Mobile Menu, Logo, Actions */}
         <div className="grid grid-cols-3 items-center h-20">
-          {/* Left-side: Mobile Menu */}
-          <div className="flex justify-start">
+          {/* Left-side: Mobile Menu & Search */}
+          <div className="flex justify-start items-center">
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                   <Button
@@ -83,6 +84,9 @@ export default function Header() {
                   </div>
               </SheetContent>
               </Sheet>
+               <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
+                  <Search className="h-5 w-5" />
+              </Button>
           </div>
 
           {/* Center Logo */}
@@ -95,10 +99,8 @@ export default function Header() {
 
           {/* Right-side Actions */}
           <div className="flex justify-end items-center">
-              <div className="flex items-center ml-4">
-                  <Button variant="ghost" size="icon" aria-label="Search" className="hidden md:inline-flex">
-                      <Search className="h-5 w-5" />
-                  </Button>
+             <ThemeToggle />
+              <div className="flex items-center ml-1">
                   <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" aria-label="Select Currency">

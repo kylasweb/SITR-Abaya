@@ -7,6 +7,7 @@ import Footer from '@/components/footer';
 import { StoreProvider } from '@/lib/store';
 import { AuthProvider } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { ThemeProvider } from '@/components/theme-provider';
 
 
 export const metadata: Metadata = {
@@ -33,20 +34,27 @@ export default function RootLayout({
         <script src="https://js.puter.com/v2/"></script>
       </head>
       <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'font-sans': isAdminRoute })}>
-        <AuthProvider>
-          <StoreProvider>
-            {isAdminRoute ? (
-                <main className="flex-grow">{children}</main>
-            ) : (
-              <>
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-              </>
-            )}
-            <Toaster />
-          </StoreProvider>
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <StoreProvider>
+              {isAdminRoute ? (
+                  <main className="flex-grow">{children}</main>
+              ) : (
+                <>
+                  <Header />
+                  <main className="flex-grow">{children}</main>
+                  <Footer />
+                </>
+              )}
+              <Toaster />
+            </StoreProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
