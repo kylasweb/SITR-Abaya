@@ -8,6 +8,7 @@ import { StoreProvider } from '@/lib/store';
 import { AuthProvider } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ErrorBoundary, ErrorLogProvider } from '@/hooks/use-error-log';
 
 
 export const metadata: Metadata = {
@@ -31,29 +32,38 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <script src="https://js.puter.com/v2/"></script>
       </head>
       <body className={cn('font-body antialiased min-h-screen flex flex-col', { 'font-sans': isAdminRoute })}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <StoreProvider>
-              {isAdminRoute ? (
-                  <main className="flex-grow">{children}</main>
-              ) : (
-                <>
-                  <Header />
-                  <main className="flex-grow">{children}</main>
-                  <Footer />
-                </>
-              )}
-              <Toaster />
-            </StoreProvider>
-          </AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ErrorLogProvider>
+              <AuthProvider>
+                <StoreProvider>
+                  {isAdminRoute ? (
+                      <main className="flex-grow">
+                        <ErrorBoundary>
+                          {children}
+                        </ErrorBoundary>
+                      </main>
+                  ) : (
+                    <>
+                      <Header />
+                      <main className="flex-grow">
+                        <ErrorBoundary>
+                          {children}
+                        </ErrorBoundary>
+                      </main>
+                      <Footer />
+                    </>
+                  )}
+                  <Toaster />
+                </StoreProvider>
+              </AuthProvider>
+            </ErrorLogProvider>
         </ThemeProvider>
       </body>
     </html>
