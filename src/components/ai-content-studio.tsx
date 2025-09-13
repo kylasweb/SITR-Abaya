@@ -1,7 +1,8 @@
+
 "use client";
 
-import { useState, FormEvent, useActionState } from 'react';
-import { Bot, Loader2 } from 'lucide-react';
+import { useState, FormEvent } from 'react';
+import { Bot, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -56,7 +57,48 @@ function OutputCard({ title, content }: { title: string, content: string }) {
 export default function AiContentStudio() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState<Record<string, boolean>>({});
   const [generatedContent, setGeneratedContent] = useState<Record<string, string>>({});
+  const [formValues, setFormValues] = useState({
+      // Product Description
+      pd_productType: 'Abaya',
+      pd_keywords: '',
+      pd_summary: '',
+      // Social Media
+      sm_topic: '',
+      sm_platform: 'Instagram',
+      sm_tone: 'Elegant',
+      // SEO
+      seo_productName: '',
+      seo_keywords: '',
+      // Blog
+      blog_topic: '',
+  });
+
+  const handleInputChange = (field: keyof typeof formValues, value: string) => {
+    setFormValues(prev => ({ ...prev, [field]: value }));
+  };
+
+  const getSuggestion = async (prompt: string, field: keyof typeof formValues) => {
+    setIsSuggesting(prev => ({ ...prev, [field]: true }));
+    try {
+        if (typeof puter === 'undefined') {
+            throw new Error('Puter.js is not available.');
+        }
+        const result = await puter.ai.chat(prompt);
+        if (result) {
+            handleInputChange(field, result);
+        } else {
+            toast({ variant: "destructive", title: "Suggestion Failed", description: "The AI could not generate a suggestion." });
+        }
+    } catch (error) {
+        console.error(error);
+        const errorMessage = error instanceof Error ? error.message : "Please check the console for details.";
+        toast({ variant: "destructive", title: "An unexpected error occurred.", description: errorMessage });
+    } finally {
+        setIsSuggesting(prev => ({ ...prev, [field]: false }));
+    }
+  };
 
   const handleGeneration = async (event: FormEvent<HTMLFormElement>, generatorType: string, prompt: string) => {
     event.preventDefault();
@@ -67,10 +109,6 @@ export default function AiContentStudio() {
       if (typeof puter === 'undefined') {
         throw new Error('Puter.js is not available.');
       }
-
-      // The puter.ai.chat() function will handle authentication as needed.
-      // In a local dev environment, this will often work without an explicit user login.
-      // In a deployed app, it will prompt the user to log in if they haven't already.
       const result = await puter.ai.chat(prompt);
 
       if (result) {
@@ -96,18 +134,15 @@ export default function AiContentStudio() {
   };
   
   const createProductDescription = (e: FormEvent<HTMLFormElement>) => {
-      const formData = new FormData(e.currentTarget);
-      const keywords = formData.get('keywords') as string;
-      const summary = formData.get('summary') as string;
-      const productType = formData.get('productType') as string;
+      const { pd_keywords, pd_summary, pd_productType } = formValues;
 
-       if (!keywords) {
+       if (!pd_keywords) {
           toast({ variant: "destructive", title: "Keywords are required." });
           return;
         }
       
       let templatePrompt = '';
-      switch (productType) {
+      switch (pd_productType) {
         case 'Abaya':
           templatePrompt = `Focus on elegance, flow, modesty, and the quality of the fabric. Use evocative language that speaks to a sense of luxury and grace.`;
           break;
@@ -120,31 +155,28 @@ export default function AiContentStudio() {
 
       const prompt = `You are an expert copywriter for a luxury modest fashion brand called SITR. Your tone is elegant, sophisticated, and evocative.
 
-Generate a compelling product description for a ${productType.toLowerCase()} based on the following details. It should be 2-3 paragraphs long.
+Generate a compelling product description for a ${pd_productType.toLowerCase()} based on the following details. It should be 2-3 paragraphs long.
 
 ${templatePrompt}
 
-Keywords: ${keywords}
-Summary: ${summary || 'Not provided.'}
+Keywords: ${pd_keywords}
+Summary: ${pd_summary || 'Not provided.'}
 
 Product Description:`;
       handleGeneration(e, 'productDescription', prompt);
   };
   
   const createSocialMediaPost = (e: FormEvent<HTMLFormElement>) => {
-      const formData = new FormData(e.currentTarget);
-      const topic = formData.get('topic') as string;
-      const platform = formData.get('platform') as string;
-      const tone = formData.get('tone') as string;
-       if (!topic) {
+      const { sm_topic, sm_platform, sm_tone } = formValues;
+       if (!sm_topic) {
           toast({ variant: "destructive", title: "Topic/Product is required." });
           return;
         }
       const prompt = `You are a social media manager for a luxury abaya brand, SITR.
 
-Generate a social media post for ${platform}.
-The post should be about: "${topic}".
-The tone should be: ${tone}.
+Generate a social media post for ${sm_platform}.
+The post should be about: "${sm_topic}".
+The tone should be: ${sm_tone}.
 
 Include relevant hashtags.
 
@@ -153,10 +185,8 @@ Generated Post:`;
   };
   
   const createSEODescription = (e: FormEvent<HTMLFormElement>) => {
-      const formData = new FormData(e.currentTarget);
-      const productName = formData.get('productName') as string;
-      const keywords = formData.get('keywords') as string;
-       if (!productName || !keywords) {
+      const { seo_productName, seo_keywords } = formValues;
+       if (!seo_productName || !seo_keywords) {
           toast({ variant: "destructive", title: "Product Name and Keywords are required." });
           return;
         }
@@ -164,17 +194,16 @@ Generated Post:`;
 
 Generate a meta description for a product page. It must be a maximum of 160 characters.
 
-Product Name: ${productName}
-Keywords: ${keywords}
+Product Name: ${seo_productName}
+Keywords: ${seo_keywords}
 
 Meta Description:`;
       handleGeneration(e, 'seoDescription', prompt);
   };
 
   const createBlogPostIdeas = (e: FormEvent<HTMLFormElement>) => {
-      const formData = new FormData(e.currentTarget);
-      const topic = formData.get('topic') as string;
-       if (!topic) {
+      const { blog_topic } = formValues;
+       if (!blog_topic) {
           toast({ variant: "destructive", title: "Topic is required." });
           return;
         }
@@ -208,7 +237,7 @@ Blog Post Ideas:`;
             <form onSubmit={createProductDescription} className="space-y-6 px-0 sm:px-6">
                 <div className="grid gap-2">
                     <Label htmlFor="productType-pd">Product Type</Label>
-                    <Select name="productType" defaultValue="Abaya">
+                    <Select value={formValues.pd_productType} onValueChange={(v) => handleInputChange('pd_productType', v)}>
                          <SelectTrigger id="productType-pd">
                             <SelectValue placeholder="Select a template" />
                         </SelectTrigger>
@@ -220,12 +249,24 @@ Blog Post Ideas:`;
                     </Select>
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="keywords-pd">Keywords</Label>
-                    <Textarea id="keywords-pd" name="keywords" placeholder="e.g., black silk, evening wear, silver embroidery" required rows={2} />
+                    <div className="flex justify-between items-center">
+                        <Label htmlFor="keywords-pd">Keywords</Label>
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest 5-7 relevant keywords for a ${formValues.pd_productType.toLowerCase()} for a luxury modest fashion brand. Return as a comma-separated list.`, 'pd_keywords')} disabled={isSuggesting['pd_keywords']}>
+                            {isSuggesting['pd_keywords'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                            Suggest
+                        </Button>
+                    </div>
+                    <Textarea id="keywords-pd" name="keywords" placeholder="e.g., black silk, evening wear, silver embroidery" required rows={2} value={formValues.pd_keywords} onChange={(e) => handleInputChange('pd_keywords', e.target.value)} />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="summary-pd">Summary (Optional)</Label>
-                    <Textarea id="summary-pd" name="summary" placeholder="e.g., Inspired by starry nights, for formal events." rows={2} />
+                    <div className="flex justify-between items-center">
+                        <Label htmlFor="summary-pd">Summary (Optional)</Label>
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Write a 1-2 sentence summary for a ${formValues.pd_productType.toLowerCase()} with these keywords: ${formValues.pd_keywords}.`, 'pd_summary')} disabled={isSuggesting['pd_summary'] || !formValues.pd_keywords}>
+                             {isSuggesting['pd_summary'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                            Suggest
+                        </Button>
+                    </div>
+                    <Textarea id="summary-pd" name="summary" placeholder="e.g., Inspired by starry nights, for formal events." rows={2} value={formValues.pd_summary} onChange={(e) => handleInputChange('pd_summary', e.target.value)} />
                 </div>
                 <div className="flex justify-end">
                     <SubmitButton pending={isLoading} text="Generate Description" />
@@ -242,13 +283,19 @@ Blog Post Ideas:`;
             </CardHeader>
             <form onSubmit={createSocialMediaPost} className="space-y-6 px-0 sm:px-6">
                 <div className="grid gap-2">
-                    <Label htmlFor="topic-sm">Topic / Product Name</Label>
-                    <Input id="topic-sm" name="topic" placeholder="e.g., Launch of the new 'Midnight Silk Abaya'" required />
+                     <div className="flex justify-between items-center">
+                        <Label htmlFor="topic-sm">Topic / Product Name</Label>
+                         <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest a creative topic for a social media post about a new luxury abaya.`, 'sm_topic')} disabled={isSuggesting['sm_topic']}>
+                            {isSuggesting['sm_topic'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                            Suggest
+                        </Button>
+                    </div>
+                    <Input id="topic-sm" name="topic" placeholder="e.g., Launch of the new 'Midnight Silk Abaya'" required value={formValues.sm_topic} onChange={(e) => handleInputChange('sm_topic', e.target.value)} />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="platform-sm">Platform</Label>
-                        <Select name="platform" defaultValue="Instagram">
+                        <Select name="platform" value={formValues.sm_platform} onValueChange={(v) => handleInputChange('sm_platform', v)}>
                              <SelectTrigger id="platform-sm">
                                 <SelectValue placeholder="Select platform" />
                             </SelectTrigger>
@@ -262,7 +309,7 @@ Blog Post Ideas:`;
                     </div>
                      <div className="grid gap-2">
                         <Label htmlFor="tone-sm">Tone</Label>
-                        <Select name="tone" defaultValue="Elegant">
+                        <Select name="tone" value={formValues.sm_tone} onValueChange={(v) => handleInputChange('sm_tone', v)}>
                              <SelectTrigger id="tone-sm">
                                 <SelectValue placeholder="Select tone" />
                             </SelectTrigger>
@@ -291,11 +338,17 @@ Blog Post Ideas:`;
             <form onSubmit={createSEODescription} className="space-y-6 px-0 sm:px-6">
                 <div className="grid gap-2">
                     <Label htmlFor="productName-seo">Product Name</Label>
-                    <Input id="productName-seo" name="productName" placeholder="e.g., Midnight Silk Abaya" required />
+                    <Input id="productName-seo" name="productName" placeholder="e.g., Midnight Silk Abaya" required value={formValues.seo_productName} onChange={(e) => handleInputChange('seo_productName', e.target.value)} />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="keywords-seo">Primary Keywords</Label>
-                    <Input id="keywords-seo" name="keywords" placeholder="e.g., black silk abaya, luxury evening wear, UAE" required />
+                     <div className="flex justify-between items-center">
+                        <Label htmlFor="keywords-seo">Primary Keywords</Label>
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest 3-4 primary SEO keywords for a product named "${formValues.seo_productName}". Return as a comma-separated list.`, 'seo_keywords')} disabled={isSuggesting['seo_keywords'] || !formValues.seo_productName}>
+                            {isSuggesting['seo_keywords'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                            Suggest
+                        </Button>
+                    </div>
+                    <Input id="keywords-seo" name="keywords" placeholder="e.g., black silk abaya, luxury evening wear, UAE" required value={formValues.seo_keywords} onChange={(e) => handleInputChange('seo_keywords', e.target.value)} />
                 </div>
                 <div className="flex justify-end">
                     <SubmitButton pending={isLoading} text="Generate Meta Description" />
@@ -312,8 +365,14 @@ Blog Post Ideas:`;
             </CardHeader>
             <form onSubmit={createBlogPostIdeas} className="space-y-6 px-0 sm:px-6">
                 <div className="grid gap-2">
-                    <Label htmlFor="topic-blog">General Topic</Label>
-                    <Input id="topic-blog" name="topic" placeholder="e.g., Styling abayas for summer" required />
+                     <div className="flex justify-between items-center">
+                        <Label htmlFor="topic-blog">General Topic</Label>
+                        <Button type="button" variant="link" size="sm" onClick={() => getSuggestion(`Suggest an engaging blog topic related to modest fashion or abayas.`, 'blog_topic')} disabled={isSuggesting['blog_topic']}>
+                            {isSuggesting['blog_topic'] ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+                            Suggest
+                        </Button>
+                    </div>
+                    <Input id="topic-blog" name="topic" placeholder="e.g., Styling abayas for summer" required value={formValues.blog_topic} onChange={(e) => handleInputChange('blog_topic', e.target.value)} />
                 </div>
                 <div className="flex justify-end">
                     <SubmitButton pending={isLoading} text="Generate Ideas" />
@@ -325,3 +384,5 @@ Blog Post Ideas:`;
     </Tabs>
   );
 }
+
+    
